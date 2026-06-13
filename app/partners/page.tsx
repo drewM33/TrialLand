@@ -93,8 +93,7 @@ export default function PartnersPage() {
         <section className="border-b border-border">
           <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
             <div className="max-w-2xl">
-              <p className="flex items-center gap-2.5 text-sm font-semibold text-primary">
-                <span className="h-px w-6 bg-primary/50" aria-hidden />
+              <p className="text-sm font-semibold text-primary">
                 For partners
               </p>
               <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight md:text-5xl">
@@ -127,8 +126,7 @@ export default function PartnersPage() {
         <section className="border-b border-border">
           <div className="mx-auto max-w-6xl px-4 py-16">
             <div className="max-w-2xl">
-              <p className="flex items-center gap-2.5 text-sm font-semibold text-rose-400">
-                <span className="h-px w-6 bg-rose-400/50" aria-hidden />
+              <p className="text-sm font-semibold text-rose-400">
                 The problem
               </p>
               <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
@@ -225,8 +223,7 @@ export default function PartnersPage() {
         <section className="border-b border-border">
           <div className="mx-auto max-w-6xl px-4 py-16">
             <div className="mb-8 max-w-2xl">
-              <p className="flex items-center gap-2.5 text-sm font-semibold text-primary">
-                <span className="h-px w-6 bg-primary/50" aria-hidden />
+              <p className="text-sm font-semibold text-primary">
                 The fix
               </p>
               <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">

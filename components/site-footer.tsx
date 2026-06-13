@@ -5,15 +5,15 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border">
       <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-10 sm:px-6 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <Image
             src="/logo.png"
             alt="TrialLand"
-            width={28}
-            height={28}
-            className="size-7 rounded-md"
+            width={396}
+            height={320}
+            className="h-9 w-auto"
           />
-          <span className="font-mono text-base font-bold tracking-tight text-foreground">
+          <span className="font-mono text-xl font-bold tracking-tight text-foreground">
             TrialLand
           </span>
         </div>

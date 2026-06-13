@@ -5,17 +5,17 @@ import { Search } from "lucide-react"
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2">
+      <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
+        <Link href="/" className="flex items-center gap-2.5">
           <Image
             src="/logo.png"
             alt="TrialLand"
-            width={28}
-            height={28}
-            className="size-7 rounded-md"
+            width={396}
+            height={320}
+            className="h-9 w-auto"
             priority
           />
-          <span className="font-mono text-base font-bold tracking-tight text-foreground">
+          <span className="font-mono text-xl font-bold tracking-tight text-foreground">
             TrialLand
           </span>
         </Link>

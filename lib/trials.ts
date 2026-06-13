@@ -21,6 +21,8 @@ export interface Trial {
   mark: string
   /** Number of humans who have claimed (for trending/stat display). */
   claims: number
+  /** Trial credits remaining out of 500 (1 wand = 100 credits). */
+  remaining: number
   /** Lower number = higher trending rank. */
   rank: number
   featured?: boolean
@@ -40,6 +42,7 @@ export const trials: Trial[] = [
     color: "#ff5a1f",
     mark: "G",
     claims: 41208,
+    remaining: 380,
     rank: 1,
     featured: true,
     madeForYou: true,
@@ -56,6 +59,7 @@ export const trials: Trial[] = [
     color: "#eae8e1",
     mark: "gr",
     claims: 33890,
+    remaining: 500,
     rank: 2,
     featured: true,
     madeForYou: true,
@@ -72,6 +76,7 @@ export const trials: Trial[] = [
     color: "#20b8cd",
     mark: "px",
     claims: 30142,
+    remaining: 240,
     rank: 3,
     featured: true,
     madeForYou: true,
@@ -88,6 +93,7 @@ export const trials: Trial[] = [
     color: "#ff4d8d",
     mark: "S",
     claims: 26500,
+    remaining: 50,
     rank: 4,
     featured: true,
     madeForYou: true,
@@ -104,6 +110,7 @@ export const trials: Trial[] = [
     color: "#2b8aef",
     mark: "ga",
     claims: 18900,
+    remaining: 310,
     rank: 5,
     madeForYou: true,
   },
@@ -119,6 +126,7 @@ export const trials: Trial[] = [
     color: "#1f2937",
     mark: "cur",
     claims: 24190,
+    remaining: 175,
     rank: 6,
     madeForYou: true,
   },
@@ -134,6 +142,7 @@ export const trials: Trial[] = [
     color: "#ff7a59",
     mark: "J",
     claims: 11240,
+    remaining: 460,
     rank: 7,
   },
   {
@@ -148,6 +157,7 @@ export const trials: Trial[] = [
     color: "#2f6df6",
     mark: "co",
     claims: 8620,
+    remaining: 90,
     rank: 8,
   },
   {
@@ -162,6 +172,7 @@ export const trials: Trial[] = [
     color: "#ff4d6d",
     mark: "L",
     claims: 15330,
+    remaining: 400,
     rank: 9,
     madeForYou: true,
   },
@@ -177,6 +188,7 @@ export const trials: Trial[] = [
     color: "#f26207",
     mark: "rpl",
     claims: 9870,
+    remaining: 25,
     rank: 10,
   },
   {
@@ -191,6 +203,7 @@ export const trials: Trial[] = [
     color: "#0b0b0b",
     mark: "11",
     claims: 7430,
+    remaining: 130,
     rank: 11,
   },
   {
@@ -205,6 +218,7 @@ export const trials: Trial[] = [
     color: "#fa3c3c",
     mark: "T",
     claims: 5120,
+    remaining: 0,
     rank: 12,
   },
 ]

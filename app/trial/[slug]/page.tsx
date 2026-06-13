@@ -5,6 +5,7 @@ import { ArrowLeft, Download, Clock, ShieldCheck } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { TrialPoster } from "@/components/trial-poster"
+import { WandMeter } from "@/components/wand-meter"
 import { TrialRow } from "@/components/trial-row"
 import { ClaimPanel } from "@/components/claim-panel"
 import { AgentProvisionPanel } from "@/components/agent-provision-panel"
@@ -98,6 +99,11 @@ export default async function TrialPage({
                         {trial.perk}
                       </span>
                     </div>
+                    <WandMeter
+                      remaining={trial.remaining}
+                      size={24}
+                      className="mt-4"
+                    />
                   </div>
                 </div>
 

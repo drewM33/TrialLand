@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Download, Sparkles } from "lucide-react"
 import { TrialPoster } from "@/components/trial-poster"
+import { WandMeter } from "@/components/wand-meter"
 import { formatClaims, type Trial } from "@/lib/trials"
 
 export function TrialCard({
@@ -40,6 +41,7 @@ export function TrialCard({
             {formatClaims(trial.claims)}
           </span>
         </div>
+        <WandMeter remaining={trial.remaining} size={18} className="mt-1.5" />
         {reason && (
           <p className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground/80">
             <Sparkles className="size-3 shrink-0 text-primary" />

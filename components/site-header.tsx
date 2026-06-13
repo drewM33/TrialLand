@@ -9,11 +9,11 @@ export function SiteHeader() {
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5">
           <Image
-            src="/logo.png"
+            src="/logo-gnome-wand.svg"
             alt="TrialLand"
-            width={396}
-            height={320}
-            className="h-9 w-auto"
+            width={64}
+            height={64}
+            className="size-9"
             priority
           />
           <span className="font-mono text-xl font-bold tracking-tight text-foreground">

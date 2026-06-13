@@ -1,14 +1,20 @@
 import Link from "next/link"
-import { Search, ShieldCheck } from "lucide-react"
+import Image from "next/image"
+import { Search } from "lucide-react"
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <span className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-            <ShieldCheck className="size-4" />
-          </span>
+          <Image
+            src="/logo.png"
+            alt="TrialLand"
+            width={28}
+            height={28}
+            className="size-7 rounded-md"
+            priority
+          />
           <span className="font-mono text-base font-bold tracking-tight text-foreground">
             TrialLand
           </span>

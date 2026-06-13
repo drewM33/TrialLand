@@ -19,7 +19,7 @@ export function SiteFooter() {
         </div>
         <p className="max-w-md text-sm text-muted-foreground text-pretty">
           One human, one trial, one non-transferable code. Verified with World
-          ID. This is a frontend demo — World ID and storage are simulated.
+          ID.
         </p>
         <nav className="flex flex-wrap gap-4 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground">

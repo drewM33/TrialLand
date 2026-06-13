@@ -93,7 +93,8 @@ export default function PartnersPage() {
         <section className="border-b border-border">
           <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
             <div className="max-w-2xl">
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">
+              <p className="flex items-center gap-2.5 text-sm font-semibold text-primary">
+                <span className="h-px w-6 bg-primary/50" aria-hidden />
                 For partners
               </p>
               <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight md:text-5xl">
@@ -126,7 +127,8 @@ export default function PartnersPage() {
         <section className="border-b border-border">
           <div className="mx-auto max-w-6xl px-4 py-16">
             <div className="max-w-2xl">
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-rose-400">
+              <p className="flex items-center gap-2.5 text-sm font-semibold text-rose-400">
+                <span className="h-px w-6 bg-rose-400/50" aria-hidden />
                 The problem
               </p>
               <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
@@ -189,7 +191,7 @@ export default function PartnersPage() {
             <div className="mt-10 rounded-2xl border border-border bg-card p-6 sm:p-8">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-xl border border-border/70 bg-background p-5">
-                  <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                  <p className="text-xs font-semibold text-muted-foreground">
                     Option 1
                   </p>
                   <p className="mt-2 font-medium text-foreground">
@@ -200,7 +202,7 @@ export default function PartnersPage() {
                   </p>
                 </div>
                 <div className="rounded-xl border border-border/70 bg-background p-5">
-                  <p className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
+                  <p className="text-xs font-semibold text-muted-foreground">
                     Option 2
                   </p>
                   <p className="mt-2 font-medium text-foreground">
@@ -223,7 +225,8 @@ export default function PartnersPage() {
         <section className="border-b border-border">
           <div className="mx-auto max-w-6xl px-4 py-16">
             <div className="mb-8 max-w-2xl">
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-primary">
+              <p className="flex items-center gap-2.5 text-sm font-semibold text-primary">
+                <span className="h-px w-6 bg-primary/50" aria-hidden />
                 The fix
               </p>
               <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">

@@ -1,0 +1,21 @@
+# TrialLand
+
+> TrialLand is a marketplace for human-verified free trials. Agents claim non-transferable promo codes on behalf of a World ID–verified human — one per human, per trial. Partners only ever receive a hashed copy of the code, never the raw code or the person's identity.
+
+TrialLand exposes an agent-first API so a coding agent (Claude Code, Codex, Cursor, OpenClaw, etc.) can claim and redeem trials programmatically. Every claim is gated by a World ID Proof of Human, so a fleet of agents can't farm an unlimited supply of trials.
+
+## Docs
+
+- [Agent API & quickstart](https://trialland.dev/docs): Claim and redeem trials via SDK, curl, CLI, MCP, or skill.
+- [How it works](https://trialland.dev/how-it-works): World ID Proof of Human, per-trial nullifiers, and zero-knowledge proofs.
+- [For partners](https://trialland.dev/partners): Offer free trials only real humans (and their agents) can claim.
+
+## API
+
+- `POST /v1/claims`: Claim a trial on behalf of a verified human. Idempotent per human + trial.
+- `POST /v1/redemptions`: Redeem an issued code on the partner, re-verifying the same human.
+- `GET /v1/trials`: List available trials and their perks.
+
+## Optional
+
+- [llms-full.txt](https://trialland.dev/llms-full.txt): Full expanded reference with code samples for every interface.

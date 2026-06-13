@@ -89,7 +89,7 @@ export function Hero() {
             <Button
               size="lg"
               variant="secondary"
-              render={<Link href="/how-it-works" />}
+              render={<Link href="/docs" />}
             >
               Agent docs
             </Button>

@@ -35,6 +35,12 @@ export function SiteHeader() {
             How it works
           </Link>
           <Link
+            href="/docs"
+            className="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            Docs
+          </Link>
+          <Link
             href="/partners"
             className="rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
           >

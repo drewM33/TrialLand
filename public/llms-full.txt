@@ -1,0 +1,101 @@
+# TrialLand — Full agent reference
+
+> TrialLand is a marketplace for human-verified free trials. An agent claims a non-transferable promo code on behalf of a World ID–verified human — one per human, per trial. Partners only ever receive a hashed copy of the code plus an anonymous nullifier, never the raw code or the person's identity.
+
+## Core concepts
+
+- **Proof of Human**: A World ID credential proving a unique living person is behind the request. It is the account — not an email an agent can mint at will.
+- **Nullifier**: A per-human, per-trial identifier. The same human claiming the same trial always collides, enforcing one-per-human without tracking the person across trials.
+- **Idempotent claims**: Re-running a claim for the same human + trial returns the same code, never a new one.
+- **Non-transferable**: Codes are bound to the human who authorized the agent and re-verified at redemption, so they can't be resold, shared, or replayed.
+
+## Authentication
+
+All requests use a partner/agent API key plus a World ID session that proves a unique human authorized the run.
+
+- `Authorization: Bearer <TRIALLAND_KEY>`
+- Body field `on_behalf_of`: a World ID session token (Proof of Human).
+
+## Endpoints
+
+### POST /v1/claims
+Claim a trial on behalf of a verified human.
+
+Request:
+    {
+      "trial": "perplexity",
+      "on_behalf_of": "<worldid_session>"
+    }
+
+Response (200):
+    {
+      "code": "PERP-V8UZ-PCU4",
+      "code_hash": "0xa9cdb2…",
+      "nullifier": "0x55e454…",
+      "transferable": false,
+      "status": "issued"
+    }
+
+### POST /v1/redemptions
+Redeem an issued code on the partner. Re-presents the human proof; if the human doesn't match the code owner, redemption fails.
+
+### GET /v1/trials
+List available trials, perks, and trial lengths.
+
+## Code samples
+
+### SDK (TypeScript)
+    import { TrialLand } from "@trialland/sdk"
+
+    const tl = new TrialLand({ apiKey: process.env.TRIALLAND_KEY })
+
+    // Claim a trial on behalf of a verified human
+    const claim = await tl.claims.create({
+      trial: "perplexity",
+      onBehalfOf: worldIdSession, // World ID Proof of Human
+    })
+
+    console.log(claim.code) // PERP-V8UZ-PCU4 (non-transferable)
+
+### curl
+    curl -X POST https://api.trialland.dev/v1/claims \
+      -H "Authorization: Bearer $TRIALLAND_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "trial": "perplexity",
+        "on_behalf_of": "<worldid_session>"
+      }'
+
+### CLI
+    # Hand to your Claude Code, Codex, or Cursor agent.
+    npm install -g @trialland/cli
+    trialland login --key tl_live_your_key
+
+    trialland claim perplexity \
+      --on-behalf-of worldid_session_abc123
+
+### MCP
+    {
+      "mcpServers": {
+        "trialland": {
+          "command": "npx",
+          "args": ["-y", "@trialland/mcp"],
+          "env": { "TRIALLAND_KEY": "tl_live_your_key" }
+        }
+      }
+    }
+
+### Skill
+    ---
+    name: claim-trial
+    description: Claim a human-verified free trial on TrialLand on behalf of the current user.
+    ---
+
+    Use the TrialLand API to claim a non-transferable trial code.
+    1. Confirm a World ID Proof of Human session for the user.
+    2. POST /v1/claims with { trial, on_behalf_of }.
+    3. Return the issued code. Re-runs are idempotent — same human, same code.
+
+## Privacy model
+
+Partners receive only the SHA-256 hash of the code and the anonymous nullifier plus redemption status. No personal data ever leaves the user's device, and TrialLand never sees the partner's plaintext code at redemption.

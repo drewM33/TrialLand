@@ -1,8 +1,79 @@
 import Link from "next/link"
-import { Search, ShieldCheck, Terminal, ArrowRight } from "lucide-react"
+import { Search, ShieldCheck, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { CodeTabs, type CodeTab } from "@/components/code-tabs"
 import { ViewModeToggle } from "@/components/view-mode-toggle"
 import { HumanView, AgentView } from "@/components/view-gate"
+
+const agentTabs: CodeTab[] = [
+  {
+    id: "sdk",
+    label: "sdk",
+    filename: "index.ts",
+    code: `import { TrialLand } from "@trialland/sdk"
+
+const tl = new TrialLand({ apiKey: process.env.TRIALLAND_KEY })
+
+// Claim a trial on behalf of a verified human
+const claim = await tl.claims.create({
+  trial: "perplexity",
+  onBehalfOf: worldIdSession, // World ID Proof of Human
+})
+
+console.log(claim.code) // PERP-V8UZ-PCU4 (non-transferable)`,
+  },
+  {
+    id: "curl",
+    label: "curl",
+    filename: "bash",
+    code: `curl -X POST https://api.trialland.dev/v1/claims \\
+  -H "Authorization: Bearer $TRIALLAND_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "trial": "perplexity",
+    "on_behalf_of": "<worldid_session>"
+  }'`,
+  },
+  {
+    id: "cli",
+    label: "cli",
+    filename: "bash",
+    code: `# Hand to your Claude Code, Codex, or Cursor agent.
+npm install -g @trialland/cli
+trialland login --key tl_live_your_key
+
+trialland claim perplexity \\
+  --on-behalf-of worldid_session_abc123`,
+  },
+  {
+    id: "mcp",
+    label: "mcp",
+    filename: "mcp.json",
+    code: `{
+  "mcpServers": {
+    "trialland": {
+      "command": "npx",
+      "args": ["-y", "@trialland/mcp"],
+      "env": { "TRIALLAND_KEY": "tl_live_your_key" }
+    }
+  }
+}`,
+  },
+  {
+    id: "skill",
+    label: "skill",
+    filename: "SKILL.md",
+    code: `---
+name: claim-trial
+description: Claim a human-verified free trial on behalf of the current user.
+---
+
+Use the TrialLand API to claim a non-transferable trial code.
+1. Confirm a World ID Proof of Human session for the user.
+2. POST /v1/claims with { trial, on_behalf_of }.
+3. Return the issued code. Re-runs are idempotent.`,
+  },
+]
 
 export function Hero() {
   return (
@@ -67,39 +138,19 @@ export function Hero() {
             burner accounts, no Sybil swarm.
           </p>
 
-          {/* API snippet */}
-          <div className="mx-auto mt-8 max-w-xl overflow-hidden rounded-xl border border-border bg-card text-left shadow-sm">
-            <div className="flex items-center gap-2 border-b border-border px-4 py-2 text-xs text-muted-foreground">
-              <Terminal className="size-3.5 text-primary" />
-              POST /v1/claims
-            </div>
-            <pre className="overflow-x-auto px-4 py-3 font-mono text-[13px] leading-relaxed text-foreground">
-              <code>{`{
-  "trial": "perplexity",
-  "on_behalf_of": "<worldid_session>"
-}`}</code>
-            </pre>
+          <div className="mx-auto mt-8 max-w-3xl text-left">
+            <CodeTabs tabs={agentTabs} />
           </div>
 
-          <div className="mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-3">
+          <div className="mx-auto mt-5 flex max-w-3xl flex-wrap items-center justify-start gap-3">
             <Button size="lg" render={<Link href="#trending" />}>
               Browse trials
               <ArrowRight className="size-4" />
             </Button>
-            <Button
-              size="lg"
-              variant="secondary"
-              render={<Link href="/docs" />}
-            >
-              Agent docs
+            <Button size="lg" variant="secondary" render={<Link href="/how-it-works" />}>
+              How verification works
             </Button>
           </div>
-
-          <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-            <ShieldCheck className="size-3.5 text-primary" />
-            Codes are bound to the human behind the agent — partners only get the
-            hash.
-          </p>
         </AgentView>
       </div>
     </section>

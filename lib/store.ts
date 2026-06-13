@@ -81,6 +81,21 @@ export function getIdentity(): string | null {
   return read<string | null>(IDENTITY_KEY, null)
 }
 
+/**
+ * Pin the active identity to a specific value — used after registration/login
+ * so the human's World ID nullifier (bound to their registered wallet) drives
+ * per-trial claim codes.
+ */
+export function setIdentity(id: string): void {
+  write(IDENTITY_KEY, id)
+}
+
+/** Clear the active identity (on logout). */
+export function clearIdentity(): void {
+  if (typeof window === "undefined") return
+  window.localStorage.removeItem(IDENTITY_KEY)
+}
+
 /** Simulates "scanning a different World App" — a brand new human. */
 export function resetIdentity(): string {
   const id = randomHex(32)

@@ -28,7 +28,7 @@ interface WorldIdModalProps {
 
 // A deterministic pseudo-QR matrix so it looks like a real World ID QR.
 function useQrMatrix(size = 21) {
-  const ref = useRef<boolean[][]>()
+  const ref = useRef<boolean[][] | undefined>(undefined)
   if (!ref.current) {
     const grid: boolean[][] = []
     let seed = 1337
@@ -55,7 +55,7 @@ function useQrMatrix(size = 21) {
     carve(size - 7, 0)
     ref.current = grid
   }
-  return ref.current
+  return ref.current!
 }
 
 export function WorldIdModal({

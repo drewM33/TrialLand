@@ -10,7 +10,11 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
+    "@dynamic-labs/ethereum": "^4.88.6",
+    "@dynamic-labs/sdk-react-core": "^4.88.6",
     "@vercel/analytics": "1.6.1",
+    "@worldcoin/idkit": "^1.5.0",
+    "@worldcoin/idkit-core": "1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.16.0",

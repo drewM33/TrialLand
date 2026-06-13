@@ -1,7 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Search } from "lucide-react"
-import { ViewModeToggle } from "@/components/view-mode-toggle"
+import { AuthNav } from "@/components/auth/auth-nav"
 
 export function SiteHeader() {
   return (
@@ -49,18 +49,11 @@ export function SiteHeader() {
         </nav>
 
         <div className="ml-auto flex items-center gap-3">
-          <ViewModeToggle size="sm" />
-          <div className="hidden items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground sm:flex">
+          <div className="hidden items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground lg:flex">
             <Search className="size-4" />
             <span className="hidden lg:inline">Search trials</span>
           </div>
-          <span className="hidden items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary sm:flex">
-            <span className="relative flex size-1.5">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary/70" />
-              <span className="relative inline-flex size-1.5 rounded-full bg-primary" />
-            </span>
-            World ID
-          </span>
+          <AuthNav />
         </div>
       </div>
     </header>

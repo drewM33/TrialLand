@@ -6,60 +6,78 @@ import { toast } from "sonner"
 import {
   Check,
   Copy,
-  ShieldCheck,
   Ticket,
   Lock,
   ArrowRight,
-  RefreshCw,
+  Wallet,
+  UserPlus,
+  ShieldCheck,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { WorldIdModal } from "@/components/worldid-modal"
 import { truncateHash } from "@/lib/crypto"
+import { isWalletRegistered } from "@/lib/registry"
 import {
   issueCode,
   deriveNullifier,
   getIssuedForSlug,
-  resetIdentity,
   type IssuedCode,
 } from "@/lib/store"
+import { useSession } from "@/lib/session"
 import type { Trial } from "@/lib/trials"
 
 export function ClaimPanel({ trial }: { trial: Trial }) {
-  const [modalOpen, setModalOpen] = useState(false)
+  const session = useSession()
+  const walletRegistered = session ? isWalletRegistered(session.wallet) : false
   const [issued, setIssued] = useState<IssuedCode | null>(null)
   const [alreadyClaimed, setAlreadyClaimed] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [claiming, setClaiming] = useState(false)
   const [ready, setReady] = useState(false)
 
-  // On mount, check whether this human already holds a code for this trial.
+  // When logged in, check whether this human already holds a code for this trial.
   useEffect(() => {
+    if (!session || !walletRegistered) {
+      setIssued(null)
+      setAlreadyClaimed(false)
+      setReady(false)
+      return
+    }
     let active = true
+    setReady(false)
     deriveNullifier(trial.slug).then((nullifier) => {
       if (!active) return
       const existing = getIssuedForSlug(trial.slug, nullifier)
       if (existing) {
         setIssued(existing)
         setAlreadyClaimed(true)
+      } else {
+        setIssued(null)
+        setAlreadyClaimed(false)
       }
       setReady(true)
     })
     return () => {
       active = false
     }
-  }, [trial.slug])
+  }, [trial.slug, session, walletRegistered])
 
-  async function handleVerified() {
-    const { record, alreadyClaimed } = await issueCode(trial.slug, trial.name)
-    setIssued(record)
-    setAlreadyClaimed(alreadyClaimed)
-    if (alreadyClaimed) {
-      toast.info("You've already claimed this trial", {
-        description: "One code per human. Here's your existing code.",
-      })
-    } else {
-      toast.success("Promo code issued", {
-        description: `A hashed copy was delivered to ${trial.name}.`,
-      })
+  async function handleClaim() {
+    setClaiming(true)
+    try {
+      const { record, alreadyClaimed } = await issueCode(trial.slug, trial.name)
+      setIssued(record)
+      setAlreadyClaimed(alreadyClaimed)
+      if (alreadyClaimed) {
+        toast.info("You've already claimed this trial", {
+          description: "One code per human. Here's your existing code.",
+        })
+      } else {
+        toast.success("Promo code issued", {
+          description: `A hashed copy was delivered to ${trial.name}.`,
+        })
+      }
+    } finally {
+      setClaiming(false)
     }
   }
 
@@ -70,17 +88,78 @@ export function ClaimPanel({ trial }: { trial: Trial }) {
     setTimeout(() => setCopied(false), 1800)
   }
 
-  function handleNewHuman() {
-    resetIdentity()
-    setIssued(null)
-    setAlreadyClaimed(false)
-    toast("Switched to a new World ID identity", {
-      description: "Simulating a different human for testing.",
-    })
+  // Gate: must be registered + logged in before claiming.
+  if (!session) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+          <Lock className="size-4 text-primary" />
+          Register to claim
+        </div>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty">
+          Claiming the {trial.name} trial requires a registered wallet. Verify
+          you&apos;re a unique human with World ID — we create your wallet on
+          Dynamic and register it on chain.
+        </p>
+
+        <ul className="mt-4 space-y-2 text-sm">
+          {[
+            "World ID Proof of Human",
+            "Wallet bound to your verification",
+            "Registered on chain before any claim",
+          ].map((item) => (
+            <li key={item} className="flex items-center gap-2 text-muted-foreground">
+              <Check className="size-4 text-primary" />
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <Button size="lg" className="mt-5 w-full" render={<Link href="/register" />}>
+          <UserPlus className="size-4" />
+          Register with World ID
+        </Button>
+        <p className="mt-3 text-center text-xs text-muted-foreground">
+          Already registered?{" "}
+          <Link href="/login" className="text-foreground underline underline-offset-4">
+            Log in
+          </Link>
+        </p>
+      </div>
+    )
+  }
+
+  if (!walletRegistered) {
+    return (
+      <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+          <Lock className="size-4 text-primary" />
+          Wallet not registered
+        </div>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty">
+          You&apos;re logged in, but this wallet isn&apos;t registered with World ID
+          on chain yet. Register your wallet before claiming {trial.name}.
+        </p>
+        <Button size="lg" className="mt-5 w-full" render={<Link href="/register" />}>
+          <UserPlus className="size-4" />
+          Register this wallet
+        </Button>
+      </div>
+    )
   }
 
   return (
     <div className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+      {/* Registered-wallet chip */}
+      <div className="mb-4 flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-2.5 py-1.5 text-xs text-primary">
+        <Wallet className="size-3.5" />
+        <span className="font-mono">{truncateHash(session.wallet)}</span>
+        <span className="ml-auto flex items-center gap-1 text-muted-foreground">
+          <ShieldCheck className="size-3.5 text-primary" />
+          Registered
+        </span>
+      </div>
+
       {!issued ? (
         <>
           <div className="flex items-center gap-2 text-sm font-medium text-foreground">
@@ -88,41 +167,28 @@ export function ClaimPanel({ trial }: { trial: Trial }) {
             Claim your {trial.trialLength}
           </div>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty">
-            Verify you&apos;re a unique human to unlock a non-transferable promo
-            code for {trial.name}. Limited to one per person.
+            Your wallet is verified and registered. Claim a non-transferable
+            promo code for {trial.name} — one per human.
           </p>
-
-          <ul className="mt-4 space-y-2 text-sm">
-            {[
-              "Zero-knowledge World ID proof",
-              "Code bound to your verification",
-              "Partner receives only a hashed copy",
-            ].map((item) => (
-              <li key={item} className="flex items-center gap-2 text-muted-foreground">
-                <Check className="size-4 text-primary" />
-                {item}
-              </li>
-            ))}
-          </ul>
 
           <Button
             size="lg"
             className="mt-5 w-full"
-            disabled={!ready}
-            onClick={() => setModalOpen(true)}
+            disabled={!ready || claiming}
+            onClick={handleClaim}
           >
-            <ShieldCheck className="size-4" />
-            Verify with World ID
+            <Ticket className="size-4" />
+            {claiming ? "Issuing code…" : "Claim trial"}
           </Button>
           <p className="mt-3 text-center text-xs text-muted-foreground">
-            No personal data shared. Proof generated on your device.
+            The partner receives only a hashed copy bound to your nullifier.
           </p>
         </>
       ) : (
         <>
           <div className="flex items-center gap-2 text-sm font-medium text-primary">
             <Check className="size-4" />
-            {alreadyClaimed ? "Already claimed" : "Verified — code issued"}
+            {alreadyClaimed ? "Already claimed" : "Code issued"}
           </div>
 
           {/* The code */}
@@ -183,23 +249,6 @@ export function ClaimPanel({ trial }: { trial: Trial }) {
           )}
         </>
       )}
-
-      {/* Testing helper: simulate a different human */}
-      <button
-        type="button"
-        onClick={handleNewHuman}
-        className="mt-4 flex w-full items-center justify-center gap-1.5 text-[11px] text-muted-foreground/70 transition-colors hover:text-muted-foreground"
-      >
-        <RefreshCw className="size-3" />
-        Demo: simulate a different human
-      </button>
-
-      <WorldIdModal
-        open={modalOpen}
-        onOpenChange={setModalOpen}
-        onVerified={handleVerified}
-        actionLabel={`claim the ${trial.name} trial`}
-      />
     </div>
   )
 }

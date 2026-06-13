@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.trialland.com"
+        }
+      ],
+      "destination": "https://trialland.com/:path*",
+      "permanent": true
+    }
+  ]
+}

@@ -162,7 +162,7 @@ export default function PartnersPage() {
         <section className="border-b border-border">
           <div className="mx-auto max-w-6xl px-4 py-16">
             <div className="max-w-2xl">
-              <p className="text-sm font-semibold text-rose-400">
+              <p className="text-sm font-semibold text-sky-300">
                 The problem
               </p>
               <HumanView>
@@ -197,8 +197,8 @@ export default function PartnersPage() {
                     key={s.label}
                     className="flex items-start gap-4 rounded-2xl border border-border bg-card p-5"
                   >
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-rose-500/10">
-                      <s.icon className="size-5 text-rose-400" aria-hidden />
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-500/10">
+                      <s.icon className="size-5 text-sky-300" aria-hidden />
                     </div>
                     <div>
                       <div className="text-2xl font-bold tracking-tight text-foreground">
@@ -222,8 +222,8 @@ export default function PartnersPage() {
                   key={p.title}
                   className="rounded-2xl border border-border bg-card p-6"
                 >
-                  <div className="flex size-10 items-center justify-center rounded-xl bg-rose-500/10">
-                    <p.icon className="size-5 text-rose-400" aria-hidden />
+                  <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/10">
+                    <p.icon className="size-5 text-sky-300" aria-hidden />
                   </div>
                   <h3 className="mt-4 text-lg font-semibold tracking-tight">
                     {p.title}

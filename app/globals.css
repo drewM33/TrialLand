@@ -188,3 +188,19 @@
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* ── Global Human / Agent view mode ──────────────────────────────────────
+ * Both skins are rendered; the `mode-agent` class on <html> selects one.
+ * `display: contents` keeps the gate wrappers layout-transparent.            */
+.human-view {
+  display: contents;
+}
+.agent-view {
+  display: none;
+}
+html.mode-agent .human-view {
+  display: none;
+}
+html.mode-agent .agent-view {
+  display: contents;
+}

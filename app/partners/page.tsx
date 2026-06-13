@@ -15,6 +15,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { PartnerDashboard } from "@/components/partner-dashboard"
 import { AbuseTrend } from "@/components/abuse-trend"
+import { HumanView, AgentView } from "@/components/view-gate"
 import { Button } from "@/components/ui/button"
 
 export const metadata = {
@@ -85,6 +86,29 @@ const benefits = [
   },
 ]
 
+const agentBenefits = [
+  {
+    icon: ShieldCheck,
+    title: "One trial per human",
+    body: "World ID Proof of Human guarantees each person — agent or not — claims your trial exactly once. No fleets, no burner emails, no 25-to-1.",
+  },
+  {
+    icon: KeyRound,
+    title: "Codes bound to the human",
+    body: "Each code is tied to the human who authorized the agent. Re-verification at redemption stops codes being resold, shared, or replayed.",
+  },
+  {
+    icon: Database,
+    title: "You get the hash, not the human",
+    body: "We deliver a SHA-256 hash of the code plus an anonymous nullifier. No personal data ever leaves the user's device.",
+  },
+  {
+    icon: Webhook,
+    title: "Built for agent traffic",
+    body: "Issue and verify over a single API call, with idempotent claims and human re-checks at signup. Mocked here, IDKit-ready later.",
+  },
+]
+
 export default function PartnersPage() {
   return (
     <div className="flex min-h-dvh flex-col">
@@ -96,14 +120,26 @@ export default function PartnersPage() {
               <p className="text-sm font-semibold text-primary">
                 For partners
               </p>
-              <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight md:text-5xl">
-                Free trials that only real humans can claim.
-              </h1>
-              <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-                List your trial on TrialLand and reach people who have proven they
-                are unique humans — each one able to claim your offer a single time,
-                with a code that can never be resold or shared.
-              </p>
+              <HumanView>
+                <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight md:text-5xl">
+                  Free trials that only real humans can claim.
+                </h1>
+                <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
+                  List your trial on TrialLand and reach people who have proven
+                  they are unique humans — each one able to claim your offer a
+                  single time, with a code that can never be resold or shared.
+                </p>
+              </HumanView>
+              <AgentView>
+                <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight md:text-5xl">
+                  Free trials only human-backed agents can claim.
+                </h1>
+                <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
+                  List your trial on TrialLand and reach agents that act for
+                  verified humans — each human able to claim once, with a code
+                  that can&apos;t be resold, shared, or farmed by a bot fleet.
+                </p>
+              </AgentView>
               <div className="mt-7 flex flex-wrap gap-3">
                 <Button size="lg" className="font-medium">
                   Become a partner
@@ -129,15 +165,28 @@ export default function PartnersPage() {
               <p className="text-sm font-semibold text-rose-400">
                 The problem
               </p>
-              <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                Free trials have become a Sybil magnet.
-              </h2>
-              <p className="mt-4 text-pretty text-lg leading-relaxed text-muted-foreground">
-                A free trial is an open invitation — and bots, burner emails, and
-                multi-account farmers have RSVP&apos;d. The same people you&apos;re
-                trying to win are impersonated thousands of times over, and it&apos;s
-                your margin footing the bill.
-              </p>
+              <HumanView>
+                <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
+                  Free trials have become a Sybil magnet.
+                </h2>
+                <p className="mt-4 text-pretty text-lg leading-relaxed text-muted-foreground">
+                  A free trial is an open invitation — and bots, burner emails,
+                  and multi-account farmers have RSVP&apos;d. The same people
+                  you&apos;re trying to win are impersonated thousands of times
+                  over, and it&apos;s your margin footing the bill.
+                </p>
+              </HumanView>
+              <AgentView>
+                <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
+                  Agents turn trial abuse into an API call.
+                </h2>
+                <p className="mt-4 text-pretty text-lg leading-relaxed text-muted-foreground">
+                  Scripted signups were already draining trials. Now autonomous
+                  agents can spin up thousands of burner accounts in minutes —
+                  your free trial is the easiest endpoint they&apos;ll hit all
+                  day, and your margin foots the bill.
+                </p>
+              </AgentView>
             </div>
 
             <div className="mt-10 grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-center">
@@ -226,33 +275,67 @@ export default function PartnersPage() {
               <p className="text-sm font-semibold text-primary">
                 The fix
               </p>
-              <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                Verify the human, not the email.
-              </h2>
-              <p className="mt-4 text-pretty text-lg leading-relaxed text-muted-foreground">
-                TrialLand gates every claim behind a World ID Proof of Human. You
-                keep the trial that drives growth — while farmers, burner emails,
-                and resold codes simply can&apos;t get through.
-              </p>
+              <HumanView>
+                <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
+                  Verify the human, not the email.
+                </h2>
+                <p className="mt-4 text-pretty text-lg leading-relaxed text-muted-foreground">
+                  TrialLand gates every claim behind a World ID Proof of Human.
+                  You keep the trial that drives growth — while farmers, burner
+                  emails, and resold codes simply can&apos;t get through.
+                </p>
+              </HumanView>
+              <AgentView>
+                <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
+                  Verify the human behind the agent.
+                </h2>
+                <p className="mt-4 text-pretty text-lg leading-relaxed text-muted-foreground">
+                  TrialLand gates every claim behind a World ID Proof of Human —
+                  so a human-backed agent gets exactly one trial, while bot
+                  fleets and burner farms simply can&apos;t get through.
+                </p>
+              </AgentView>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {benefits.map((b) => (
-                <div
-                  key={b.title}
-                  className="rounded-2xl border border-border bg-card p-6"
-                >
-                  <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-                    <b.icon className="size-5 text-primary" aria-hidden />
+            <HumanView>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {benefits.map((b) => (
+                  <div
+                    key={b.title}
+                    className="rounded-2xl border border-border bg-card p-6"
+                  >
+                    <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
+                      <b.icon className="size-5 text-primary" aria-hidden />
+                    </div>
+                    <h3 className="mt-4 text-lg font-semibold tracking-tight">
+                      {b.title}
+                    </h3>
+                    <p className="mt-2 text-pretty leading-relaxed text-muted-foreground">
+                      {b.body}
+                    </p>
                   </div>
-                  <h3 className="mt-4 text-lg font-semibold tracking-tight">
-                    {b.title}
-                  </h3>
-                  <p className="mt-2 text-pretty leading-relaxed text-muted-foreground">
-                    {b.body}
-                  </p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </HumanView>
+            <AgentView>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {agentBenefits.map((b) => (
+                  <div
+                    key={b.title}
+                    className="rounded-2xl border border-border bg-card p-6"
+                  >
+                    <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
+                      <b.icon className="size-5 text-primary" aria-hidden />
+                    </div>
+                    <h3 className="mt-4 text-lg font-semibold tracking-tight">
+                      {b.title}
+                    </h3>
+                    <p className="mt-2 text-pretty leading-relaxed text-muted-foreground">
+                      {b.body}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </AgentView>
           </div>
         </section>
 

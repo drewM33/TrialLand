@@ -34,9 +34,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`dark ${geistSans.variable} ${geistMono.variable}`}
     >
       <body className="bg-background font-sans antialiased">
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{if(localStorage.getItem('trialland.view')==='agent')document.documentElement.classList.add('mode-agent')}catch(e){}",
+          }}
+        />
         {children}
         <Toaster />
         {process.env.NODE_ENV === 'production' && <Analytics />}

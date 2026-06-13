@@ -7,6 +7,8 @@ import { SiteFooter } from "@/components/site-footer"
 import { TrialPoster } from "@/components/trial-poster"
 import { TrialRow } from "@/components/trial-row"
 import { ClaimPanel } from "@/components/claim-panel"
+import { AgentProvisionPanel } from "@/components/agent-provision-panel"
+import { HumanView, AgentView } from "@/components/view-gate"
 import { Badge } from "@/components/ui/badge"
 import { getTrial, formatClaims, trials } from "@/lib/trials"
 import { getRecommendations } from "@/lib/recommend"
@@ -103,39 +105,77 @@ export default async function TrialPage({
                   {trial.description}
                 </p>
 
-                <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                  {[
-                    {
-                      title: "Verified human only",
-                      body: "Each code requires a World ID Proof of Human. Bots can't farm trials.",
-                    },
-                    {
-                      title: "One per person",
-                      body: `Your nullifier ensures you can claim ${trial.name} exactly once.`,
-                    },
-                    {
-                      title: "Non-transferable",
-                      body: "Codes are bound to you and re-verified at redemption. No reselling.",
-                    },
-                  ].map((f) => (
-                    <div
-                      key={f.title}
-                      className="rounded-xl border border-border bg-card p-4"
-                    >
-                      <h3 className="text-sm font-semibold text-foreground">
-                        {f.title}
-                      </h3>
-                      <p className="mt-1 text-xs leading-relaxed text-muted-foreground text-pretty">
-                        {f.body}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+                <HumanView>
+                  <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                    {[
+                      {
+                        title: "Verified human only",
+                        body: "Each code requires a World ID Proof of Human. Bots can't farm trials.",
+                      },
+                      {
+                        title: "One per person",
+                        body: `Your nullifier ensures you can claim ${trial.name} exactly once.`,
+                      },
+                      {
+                        title: "Non-transferable",
+                        body: "Codes are bound to you and re-verified at redemption. No reselling.",
+                      },
+                    ].map((f) => (
+                      <div
+                        key={f.title}
+                        className="rounded-xl border border-border bg-card p-4"
+                      >
+                        <h3 className="text-sm font-semibold text-foreground">
+                          {f.title}
+                        </h3>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground text-pretty">
+                          {f.body}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </HumanView>
+
+                <AgentView>
+                  <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                    {[
+                      {
+                        title: "Human-backed only",
+                        body: "Every claim carries a World ID proof of the human behind your agent. Bot fleets can't farm trials.",
+                      },
+                      {
+                        title: "One per human",
+                        body: `Your agent can claim ${trial.name} once per verified human — re-runs are idempotent.`,
+                      },
+                      {
+                        title: "Programmatic & bound",
+                        body: "Claim and redeem over the API. Codes stay tied to the human and are re-verified at redemption.",
+                      },
+                    ].map((f) => (
+                      <div
+                        key={f.title}
+                        className="rounded-xl border border-border bg-card p-4"
+                      >
+                        <h3 className="text-sm font-semibold text-foreground">
+                          {f.title}
+                        </h3>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground text-pretty">
+                          {f.body}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </AgentView>
               </div>
 
-              {/* Right: claim panel */}
+              {/* Right: claim / provision panel */}
               <div className="lg:sticky lg:top-20 lg:self-start">
-                <ClaimPanel trial={trial} />
+                <HumanView>
+                  <ClaimPanel trial={trial} />
+                </HumanView>
+                <AgentView>
+                  <AgentProvisionPanel trial={trial} />
+                </AgentView>
               </div>
             </div>
           </div>

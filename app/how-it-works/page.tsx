@@ -9,9 +9,11 @@ import {
   ArrowRight,
   KeyRound,
   UserCheck,
+  Webhook,
 } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { HumanView, AgentView } from "@/components/view-gate"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
@@ -40,6 +42,29 @@ const steps = [
     icon: UserCheck,
     title: "Redeem, re-verified",
     body: "At checkout the partner re-checks World ID. If the proven human doesn't match the code's owner, redemption fails. Codes can't be sold or shared.",
+  },
+]
+
+const agentSteps = [
+  {
+    icon: Fingerprint,
+    title: "Bind a verified human",
+    body: "Your agent presents a World ID session proving a unique human authorized the run. The proof is the identity — not an email it can mint at will.",
+  },
+  {
+    icon: Ticket,
+    title: "Claim over the API",
+    body: "TrialLand mints one code per human and returns it to your agent. The per-trial nullifier makes re-runs idempotent — same human, same code, never a duplicate.",
+  },
+  {
+    icon: Lock,
+    title: "Partner gets only a hash",
+    body: "The partner receives a hashed copy of the code and the nullifier — never the raw code or the human's identity. Privacy by architecture.",
+  },
+  {
+    icon: Webhook,
+    title: "Redeem, re-verified",
+    body: "Your agent redeems programmatically and re-presents the human proof. If the human doesn't match the code's owner, redemption fails. Codes can't be sold or replayed.",
   },
 ]
 
@@ -72,38 +97,75 @@ export default function HowItWorksPage() {
             <ShieldCheck className="size-3.5 text-primary" />
             Powered by World ID
           </span>
-          <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            One real human, one free trial
-          </h1>
-          <p className="mx-auto mt-4 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
-            TrialLand ends trial abuse by issuing codes that are tied to a
-            verified person — not an email address you can spin up infinitely.
-          </p>
+          <HumanView>
+            <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+              One real human, one free trial
+            </h1>
+            <p className="mx-auto mt-4 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
+              TrialLand ends trial abuse by issuing codes that are tied to a
+              verified person — not an email address you can spin up infinitely.
+            </p>
+          </HumanView>
+          <AgentView>
+            <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+              One verified human, one agent claim
+            </h1>
+            <p className="mx-auto mt-4 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
+              TrialLand lets agents claim trials over the API — each one tied to
+              a verified human, so a fleet of agents can&apos;t farm an endless
+              supply of trials.
+            </p>
+          </AgentView>
         </section>
 
         {/* Steps */}
         <section className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
-          <ol className="grid gap-4 sm:grid-cols-2">
-            {steps.map((step, i) => (
-              <li
-                key={step.title}
-                className="relative rounded-2xl border border-border bg-card p-6"
-              >
-                <span className="absolute right-5 top-5 font-mono text-sm text-muted-foreground/50">
-                  0{i + 1}
-                </span>
-                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                  <step.icon className="size-5" />
-                </div>
-                <h2 className="mt-4 text-lg font-semibold text-foreground">
-                  {step.title}
-                </h2>
-                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground text-pretty">
-                  {step.body}
-                </p>
-              </li>
-            ))}
-          </ol>
+          <HumanView>
+            <ol className="grid gap-4 sm:grid-cols-2">
+              {steps.map((step, i) => (
+                <li
+                  key={step.title}
+                  className="relative rounded-2xl border border-border bg-card p-6"
+                >
+                  <span className="absolute right-5 top-5 font-mono text-sm text-muted-foreground/50">
+                    0{i + 1}
+                  </span>
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <step.icon className="size-5" />
+                  </div>
+                  <h2 className="mt-4 text-lg font-semibold text-foreground">
+                    {step.title}
+                  </h2>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground text-pretty">
+                    {step.body}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </HumanView>
+          <AgentView>
+            <ol className="grid gap-4 sm:grid-cols-2">
+              {agentSteps.map((step, i) => (
+                <li
+                  key={step.title}
+                  className="relative rounded-2xl border border-border bg-card p-6"
+                >
+                  <span className="absolute right-5 top-5 font-mono text-sm text-muted-foreground/50">
+                    0{i + 1}
+                  </span>
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <step.icon className="size-5" />
+                  </div>
+                  <h2 className="mt-4 text-lg font-semibold text-foreground">
+                    {step.title}
+                  </h2>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground text-pretty">
+                    {step.body}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </AgentView>
         </section>
 
         {/* Concepts */}

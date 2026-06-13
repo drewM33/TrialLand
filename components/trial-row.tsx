@@ -10,10 +10,13 @@ export function TrialRow({
   title,
   trials,
   ranked = false,
+  reasons,
 }: {
   title: string
   trials: Trial[]
   ranked?: boolean
+  /** Optional map of trial slug -> "why recommended" label. */
+  reasons?: Record<string, string>
 }) {
   const scrollRef = useRef<HTMLDivElement>(null)
 
@@ -55,6 +58,7 @@ export function TrialRow({
             key={trial.slug}
             trial={trial}
             rank={ranked ? i + 1 : undefined}
+            reason={reasons?.[trial.slug]}
           />
         ))}
       </div>

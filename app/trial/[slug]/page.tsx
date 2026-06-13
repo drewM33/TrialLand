@@ -8,12 +8,8 @@ import { TrialPoster } from "@/components/trial-poster"
 import { TrialRow } from "@/components/trial-row"
 import { ClaimPanel } from "@/components/claim-panel"
 import { Badge } from "@/components/ui/badge"
-import {
-  getTrial,
-  getByCategory,
-  formatClaims,
-  trials,
-} from "@/lib/trials"
+import { getTrial, formatClaims, trials } from "@/lib/trials"
+import { getRecommendations } from "@/lib/recommend"
 
 export function generateStaticParams() {
   return trials.map((t) => ({ slug: t.slug }))
@@ -42,8 +38,9 @@ export default async function TrialPage({
   const trial = getTrial(slug)
   if (!trial) notFound()
 
-  const related = getByCategory(trial.category).filter(
-    (t) => t.slug !== trial.slug,
+  const recommendations = getRecommendations(trial.slug, 8)
+  const reasons = Object.fromEntries(
+    recommendations.map((r) => [r.trial.slug, r.reason]),
   )
 
   return (
@@ -144,9 +141,13 @@ export default async function TrialPage({
           </div>
         </div>
 
-        {related.length > 0 && (
+        {recommendations.length > 0 && (
           <div className="mx-auto mt-12 max-w-7xl px-4 sm:px-6">
-            <TrialRow title={`More ${trial.category}`} trials={related} />
+            <TrialRow
+              title="Recommended for you"
+              trials={recommendations.map((r) => r.trial)}
+              reasons={reasons}
+            />
           </div>
         )}
       </main>

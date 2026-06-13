@@ -1,14 +1,17 @@
 import Link from "next/link"
-import { Download } from "lucide-react"
+import { Download, Sparkles } from "lucide-react"
 import { TrialPoster } from "@/components/trial-poster"
 import { formatClaims, type Trial } from "@/lib/trials"
 
 export function TrialCard({
   trial,
   rank,
+  reason,
 }: {
   trial: Trial
   rank?: number
+  /** Optional "why recommended" label shown under the trial meta. */
+  reason?: string
 }) {
   return (
     <Link
@@ -37,6 +40,12 @@ export function TrialCard({
             {formatClaims(trial.claims)}
           </span>
         </div>
+        {reason && (
+          <p className="mt-1 flex items-center gap-1 text-[11px] text-muted-foreground/80">
+            <Sparkles className="size-3 shrink-0 text-primary" />
+            <span className="truncate">{reason}</span>
+          </p>
+        )}
       </div>
     </Link>
   )

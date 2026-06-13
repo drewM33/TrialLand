@@ -219,6 +219,17 @@ export const categories: TrialCategory[] = [
   "Voice",
 ]
 
+/** Slugs that have a real brand logo asset in /public/logos. */
+export const trialsWithLogo = new Set<string>([
+  "genspark", "granola", "perplexity", "sintra", "gamma", "cursor",
+  "jasper", "copy-ai", "lovable", "replit", "elevenlabs",
+])
+
+/** Returns the brand logo path for a trial, or null to fall back to its mark. */
+export function trialLogo(slug: string): string | null {
+  return trialsWithLogo.has(slug) ? `/logos/${slug}.png` : null
+}
+
 export function getTrial(slug: string): Trial | undefined {
   return trials.find((t) => t.slug === slug)
 }

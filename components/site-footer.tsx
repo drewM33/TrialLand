@@ -10,7 +10,7 @@ export function SiteFooter() {
             <ShieldCheck className="size-4" />
           </span>
           <span className="font-mono text-base font-bold tracking-tight text-foreground">
-            TrialBase
+            TrialLand
           </span>
         </div>
         <p className="max-w-md text-sm text-muted-foreground text-pretty">

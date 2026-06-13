@@ -6,7 +6,7 @@ import { PartnerDashboard } from "@/components/partner-dashboard"
 import { Button } from "@/components/ui/button"
 
 export const metadata = {
-  title: "For partners — TrialBase",
+  title: "For partners — TrialLand",
   description:
     "Offer free trials that can only be claimed once per real human. Receive hashed, non-transferable promo codes and verify the same person at redemption.",
 }
@@ -49,7 +49,7 @@ export default function PartnersPage() {
                 Free trials that only real humans can claim.
               </h1>
               <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-                List your trial on TrialBase and reach people who have proven they
+                List your trial on TrialLand and reach people who have proven they
                 are unique humans — each one able to claim your offer a single time,
                 with a code that can never be resold or shared.
               </p>
@@ -102,7 +102,7 @@ export default function PartnersPage() {
               </h2>
               <p className="mt-3 text-pretty leading-relaxed text-muted-foreground">
                 This is exactly what a third party like Genspark or Perplexity
-                would see for codes issued from TrialBase. Claim a trial in the
+                would see for codes issued from TrialLand. Claim a trial in the
                 marketplace, then watch it appear here as a privacy-preserving
                 hashed record.
               </p>

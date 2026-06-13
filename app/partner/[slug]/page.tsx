@@ -17,7 +17,7 @@ export async function generateMetadata({
   const { slug } = await params
   const trial = getTrial(slug)
   return {
-    title: trial ? `Redeem on ${trial.name} — TrialBase demo` : "Redeem",
+    title: trial ? `Redeem on ${trial.name} — TrialLand demo` : "Redeem",
   }
 }
 
@@ -32,7 +32,7 @@ export default async function PartnerPage({
 
   return (
     <div className="flex min-h-dvh flex-col bg-muted/30">
-      {/* Mock partner site chrome — intentionally distinct from TrialBase */}
+      {/* Mock partner site chrome — intentionally distinct from TrialLand */}
       <header className="border-b border-border bg-background">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3 sm:px-6">
           <span className="text-sm font-medium text-foreground">
@@ -40,7 +40,7 @@ export default async function PartnerPage({
           </span>
           <span className="flex items-center gap-1.5 rounded-full border border-border px-2.5 py-1 text-xs text-muted-foreground">
             <ShieldCheck className="size-3.5 text-primary" />
-            Partner of TrialBase
+            Partner of TrialLand
           </span>
         </div>
       </header>
@@ -58,7 +58,7 @@ export default async function PartnerPage({
 
         <p className="mt-6 text-center text-xs leading-relaxed text-muted-foreground text-pretty">
           This is a simulated partner checkout demonstrating how a third party
-          validates a TrialBase code and re-verifies World ID. No real account is
+          validates a TrialLand code and re-verifies World ID. No real account is
           created.
         </p>
       </main>

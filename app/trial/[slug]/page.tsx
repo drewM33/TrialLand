@@ -26,9 +26,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params
   const trial = getTrial(slug)
-  if (!trial) return { title: "Trial not found — TrialBase" }
+  if (!trial) return { title: "Trial not found — TrialLand" }
   return {
-    title: `${trial.name} free trial — TrialBase`,
+    title: `${trial.name} free trial — TrialLand`,
     description: `${trial.tagline}. Claim a verified, non-transferable ${trial.name} trial code with World ID.`,
   }
 }

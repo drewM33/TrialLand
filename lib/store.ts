@@ -3,7 +3,7 @@
 import { sha256 } from "@/lib/crypto"
 
 /**
- * Frontend-only mock "backend" for TrialBase, persisted in localStorage.
+ * Frontend-only mock "backend" for TrialLand, persisted in localStorage.
  *
  * It models the World ID concepts from the docs in a simulated way:
  * - A `nullifier` is the per-human, per-action uniqueness identifier. We store
@@ -14,9 +14,9 @@ import { sha256 } from "@/lib/crypto"
  *   model where relying parties receive proofs/derived values, not raw data.
  */
 
-const IDENTITY_KEY = "trialbase.worldid.identity"
-const ISSUED_KEY = "trialbase.issued.v1"
-const PARTNER_KEY = "trialbase.partnerdb.v1"
+const IDENTITY_KEY = "trialland.worldid.identity"
+const ISSUED_KEY = "trialland.issued.v1"
+const PARTNER_KEY = "trialland.partnerdb.v1"
 
 export interface IssuedCode {
   slug: string

@@ -9,7 +9,7 @@ const steps = [
   {
     icon: Ticket,
     title: "Get your code",
-    body: "TrialBase mints a unique, non-transferable promo code bound to your verification. The partner receives only a hashed copy.",
+    body: "TrialLand mints a unique, non-transferable promo code bound to your verification. The partner receives only a hashed copy.",
   },
   {
     icon: KeyRound,
@@ -23,7 +23,7 @@ export function HowItWorks() {
     <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
       <div className="mb-8 text-center">
         <h2 className="text-balance text-2xl font-semibold text-foreground sm:text-3xl">
-          How TrialBase works
+          How TrialLand works
         </h2>
         <p className="mx-auto mt-2 max-w-xl text-pretty text-sm text-muted-foreground">
           A trial you can actually trust — issued to a verified human and

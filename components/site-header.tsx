@@ -10,7 +10,7 @@ export function SiteHeader() {
             <ShieldCheck className="size-4" />
           </span>
           <span className="font-mono text-base font-bold tracking-tight text-foreground">
-            TrialBase
+            TrialLand
           </span>
         </Link>
 

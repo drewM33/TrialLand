@@ -15,9 +15,9 @@ import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "How it works — TrialBase",
+  title: "How it works — TrialLand",
   description:
-    "How TrialBase uses World ID Proof of Human to issue unique, non-transferable free trial codes — one per real person.",
+    "How TrialLand uses World ID Proof of Human to issue unique, non-transferable free trial codes — one per real person.",
 }
 
 const steps = [
@@ -57,7 +57,7 @@ const concepts = [
   {
     icon: ShieldCheck,
     term: "Zero-knowledge proof",
-    def: "Verification happens on your device. You prove you're human without sharing personal data with TrialBase or the partner.",
+    def: "Verification happens on your device. You prove you're human without sharing personal data with TrialLand or the partner.",
   },
 ]
 
@@ -76,7 +76,7 @@ export default function HowItWorksPage() {
             One real human, one free trial
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
-            TrialBase ends trial abuse by issuing codes that are tied to a
+            TrialLand ends trial abuse by issuing codes that are tied to a
             verified person — not an email address you can spin up infinitely.
           </p>
         </section>

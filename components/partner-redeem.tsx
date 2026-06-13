@@ -49,7 +49,7 @@ export function PartnerRedeem({ trial }: { trial: Trial }) {
 
     if (!record) {
       setError(
-        "That promo code isn't recognized for this service. Claim one on TrialBase first.",
+        "That promo code isn't recognized for this service. Claim one on TrialLand first.",
       )
       return
     }
@@ -119,7 +119,7 @@ export function PartnerRedeem({ trial }: { trial: Trial }) {
           render={<Link href="/" />}
         >
           <ArrowLeft className="size-4" />
-          Back to TrialBase
+          Back to TrialLand
         </Button>
       </div>
     )
@@ -153,7 +153,7 @@ export function PartnerRedeem({ trial }: { trial: Trial }) {
           Start your {trial.trialLength}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground text-pretty">
-          Enter your details and the unique promo code from TrialBase.
+          Enter your details and the unique promo code from TrialLand.
         </p>
 
         <div className="mt-5 space-y-4">
@@ -190,7 +190,7 @@ export function PartnerRedeem({ trial }: { trial: Trial }) {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="code">TrialBase promo code</Label>
+            <Label htmlFor="code">TrialLand promo code</Label>
             <div className="relative">
               <Ticket className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input

@@ -11,9 +11,9 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'TrialBase — Human-verified free trials',
+  title: 'TrialLand — Human-verified free trials',
   description:
-    'TrialBase is a marketplace for free trials. Prove you are a unique human with World ID and claim a non-transferable promo code, one per human per trial.',
+    'TrialLand is a marketplace for free trials. Prove you are a unique human with World ID and claim a non-transferable promo code, one per human per trial.',
   generator: 'v0.app',
   icons: {
     icon: [

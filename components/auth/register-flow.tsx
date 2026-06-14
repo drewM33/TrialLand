@@ -163,9 +163,8 @@ function DemoRegisterFlow() {
       setPhase("verify")
       return
     }
-    const identity = getOrCreateIdentity()
-    const wallet = "0x" + (await sha256(`wallet:${identity}`)).slice(0, 40)
-    setWalletAddress(wallet)
+   
+    setWalletAddress(walletAddress)
     setPhase("verify")
   }
 

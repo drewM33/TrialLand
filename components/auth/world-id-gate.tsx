@@ -129,14 +129,15 @@ function RealGate({
       {rpContext ? (
         <IDKitRequestWidget
           key={`${action}:${signal ?? ""}:${rpContext.nonce}`}
+          allow_legacy_proofs={true}
           open={open}
           onOpenChange={handleOpenChange}
           app_id={worldAppId as `app_${string}`}
           action={action}
-          rp_context={rpContext}
-          allow_legacy_proofs={true}
+          rp_context={rpContext}        
           preset={preset}
           handleVerify={handleVerify}
+          environment={"staging"}
           onSuccess={(result) => onVerified(extractNullifier(result))}
         />
       ) : null}

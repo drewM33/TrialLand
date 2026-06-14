@@ -6,6 +6,7 @@ export type TrialCategory =
   | "Productivity"
   | "Design"
   | "Voice"
+  | "Security"
 
 export interface Trial {
   slug: string
@@ -30,6 +31,23 @@ export interface Trial {
 }
 
 export const trials: Trial[] = [
+  {
+    slug: "valiron",
+    name: "Valiron",
+    category: "Security",
+    tagline: "Trust middleware for AI agents",
+    description:
+      "Trust middleware for autonomous agents: Valiron scores an agent's identity, on-chain reputation, behavior, and World ID human-link, then gates your API with allow/deny decisions and trust-based pricing — so only trustworthy, human-backed agents get through.",
+    trialLength: "Free trial",
+    perk: "Pro · 500 free calls",
+    color: "#5b4bdb",
+    mark: "V",
+    claims: 1280,
+    remaining: 500,
+    rank: 0,
+    featured: true,
+    madeForYou: true,
+  },
   {
     slug: "genspark",
     name: "Genspark",
@@ -224,6 +242,7 @@ export const trials: Trial[] = [
 ]
 
 export const categories: TrialCategory[] = [
+  "Security",
   "AI Assistant",
   "Writing",
   "Coding",

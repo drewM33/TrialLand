@@ -77,12 +77,15 @@ export function WandMeter({
   remaining,
   size = 22,
   showLabel = true,
+  light = false,
   className,
 }: {
   remaining: number
   /** Wand height in px. */
   size?: number
   showLabel?: boolean
+  /** Use a light label for placement over dark/colored backgrounds. */
+  light?: boolean
   className?: string
 }) {
   const r = Math.max(0, Math.min(TOTAL, remaining))
@@ -98,7 +101,12 @@ export function WandMeter({
         ))}
       </span>
       {showLabel && (
-        <span className="text-[11px] font-medium tabular-nums text-muted-foreground">
+        <span
+          className={cn(
+            "text-[11px] font-medium tabular-nums",
+            light ? "text-white/75" : "text-muted-foreground",
+          )}
+        >
           {r === 0 ? "Sold out" : `${r} left`}
         </span>
       )}

@@ -57,6 +57,7 @@ export function TrialRow({
           <TrialCard
             key={trial.slug}
             trial={trial}
+            index={i}
             rank={ranked ? i + 1 : undefined}
             reason={reasons?.[trial.slug]}
           />

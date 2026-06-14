@@ -14,7 +14,7 @@
 
 export const worldAppId = process.env.NEXT_PUBLIC_WLD_APP_ID ?? ""
 export const worldActionRegister =
-  process.env.NEXT_PUBLIC_WLD_ACTION_REGISTER ?? "register-trialland"
+  process.env.NEXT_PUBLIC_WLD_ACTION_REGISTER ?? "register-wallet"
 const worldVerificationLevelRaw =
   process.env.NEXT_PUBLIC_WLD_VERIFICATION_LEVEL ?? "device"
 /** IDKit verification level ("device" for broad compatibility, or "orb"). */

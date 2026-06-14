@@ -1,20 +1,8 @@
 import Link from "next/link"
-import {
-  ArrowRight,
-  Database,
-  KeyRound,
-  ShieldCheck,
-  Webhook,
-  TrendingUp,
-  Users,
-  Coins,
-  LineChart,
-  Scissors,
-} from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { PartnerDashboard } from "@/components/partner-dashboard"
-import { AbuseTrend } from "@/components/abuse-trend"
 import { HumanView, AgentView } from "@/components/view-gate"
 import { Button } from "@/components/ui/button"
 
@@ -24,88 +12,70 @@ export const metadata = {
     "Sybil and multi-account abuse is quietly inflating your CAC and skewing your conversion metrics. TrialLand offers free trials that only real humans can claim — one per person, with non-transferable codes.",
 }
 
-const stats = [
+const workflows = [
   {
-    icon: TrendingUp,
-    value: "2x",
-    label: "free-trial abuse in 6 months",
-    sub: "Growing exponentially as of April",
+    title: ["Your CAC is", "quietly inflating"],
+    eyebrow: "THE PROBLEM",
+    body: "Every farmed trial spends real money — tokens, compute, credits, support — on someone who was never going to pay.",
+    href: "/docs",
+    accentA: "from-cyan-400/35",
+    accentB: "to-indigo-400/30",
+    chip: "COST LEAK",
   },
   {
-    icon: Users,
-    value: "1 in 6",
-    label: "signups linked to multi-account abuse",
-    sub: "Across payment-network data",
+    title: ["Conversion", "metrics skewed"],
+    eyebrow: "THE PROBLEM",
+    body: "Signups and trial-starts look healthy while trial-to-paid quietly craters under bots and burner accounts.",
+    href: "/how-it-works",
+    accentA: "from-violet-400/35",
+    accentB: "to-fuchsia-400/30",
+    chip: "METRICS DRIFT",
   },
   {
-    icon: Coins,
-    value: "$500+",
-    label: "burned to acquire one paying customer",
-    sub: "≈ 25 trials bankrolled per conversion",
-  },
-]
-
-const painPoints = [
-  {
-    icon: Coins,
-    title: "Your CAC is quietly inflating",
-    body: "Every farmed trial spends real money — tokens, compute, credits, support — on someone who was never going to pay. When 25 trials buy a single conversion, abuse is the line item nobody budgeted for.",
-  },
-  {
-    icon: LineChart,
-    title: "Your conversion metrics are skewed",
-    body: "Signups and trial-starts look healthy while trial-to-paid quietly craters. You end up optimizing funnels and forecasting revenue against numbers that are padded with bots and burner accounts.",
-  },
-  {
-    icon: Scissors,
-    title: "You're forced into a lose-lose",
-    body: "Not every failed trial is abuse — but enough are that the economics are rigged. So you either keep the free trial and let abuse eat your margin, or kill it and watch real growth slow.",
+    title: ["Remove abuse,", "keep growth"],
+    eyebrow: "THE FIX",
+    body: "Verify the human, not the email. Keep the free trial that drives growth while farmers and resellers are filtered out.",
+    href: "/partners",
+    accentA: "from-emerald-400/35",
+    accentB: "to-sky-400/30",
+    chip: "HUMAN VERIFICATION",
   },
 ]
 
-const benefits = [
+const principles = [
   {
-    icon: ShieldCheck,
     title: "One trial per human",
     body: "World ID Proof of Human guarantees each person claims your trial exactly once — no burner emails, no farming, no 25-to-1.",
   },
   {
-    icon: KeyRound,
     title: "Non-transferable codes",
     body: "Each code is bound to the human who claimed it. Re-verification at redemption stops codes being sold or shared.",
   },
   {
-    icon: Database,
     title: "You get the hash, not the human",
     body: "We deliver a SHA-256 hash of the code plus an anonymous nullifier. No personal data ever leaves the user's device.",
   },
   {
-    icon: Webhook,
     title: "Drop-in verification",
     body: "Validate a code hash and re-check the same human at signup with a single API call. Mocked here, IDKit-ready later.",
   },
 ]
 
-const agentBenefits = [
+const stats = [
   {
-    icon: ShieldCheck,
-    title: "One trial per human",
-    body: "World ID Proof of Human guarantees each person — agent or not — claims your trial exactly once. No fleets, no burner emails, no 25-to-1.",
+    value: "2x",
+    label: "free-trial abuse in 6 months",
+    sub: "Growing exponentially as of April",
   },
   {
-    icon: KeyRound,
-    title: "Codes bound to the human",
-    body: "Each code is tied to the human who authorized the agent. Re-verification at redemption stops codes being resold, shared, or replayed.",
+    value: "1 in 6",
+    label: "signups linked to multi-account abuse",
+    sub: "Across payment-network data",
   },
   {
-    icon: Database,
-    title: "You get the hash, not the human",
-    body: "We deliver a SHA-256 hash of the code plus an anonymous nullifier. No personal data ever leaves the user's device.",
-  },
-  {
-    icon: Webhook,
-    title: "Built for agent traffic",
-    body: "Issue and verify over a single API call, with idempotent claims and human re-checks at signup. Mocked here, IDKit-ready later.",
+    value: "$500+",
+    label: "burned to acquire one paying customer",
+    sub: "≈ 25 trials bankrolled per conversion",
   },
 ]
 
@@ -115,241 +85,247 @@ export default function PartnersPage() {
       <SiteHeader />
       <main className="flex-1">
         <section className="border-b border-border">
-          <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-            <div className="max-w-2xl">
-              <p className="text-sm font-semibold text-primary">
-                For partners
+          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 md:py-20">
+            <p className="text-sm font-semibold text-primary">For partners</p>
+            <HumanView>
+              <h1 className="mt-4 max-w-3xl text-balance text-4xl font-bold tracking-tight md:text-5xl">
+                Free trials that only real humans can claim.
+              </h1>
+              <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
+                List your trial on TrialLand and reach people who have proven they
+                are unique humans — each one able to claim your offer a single
+                time, with a code that can never be resold or shared.
               </p>
-              <HumanView>
-                <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight md:text-5xl">
-                  Free trials that only real humans can claim.
-                </h1>
-                <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-                  List your trial on TrialLand and reach people who have proven
-                  they are unique humans — each one able to claim your offer a
-                  single time, with a code that can never be resold or shared.
-                </p>
-              </HumanView>
-              <AgentView>
-                <h1 className="mt-4 text-balance text-4xl font-bold tracking-tight md:text-5xl">
-                  Free trials only human-backed agents can claim.
-                </h1>
-                <p className="mt-5 text-pretty text-lg leading-relaxed text-muted-foreground">
-                  List your trial on TrialLand and reach agents that act for
-                  verified humans — each human able to claim once, with a code
-                  that can&apos;t be resold, shared, or farmed by a bot fleet.
-                </p>
-              </AgentView>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <Button size="lg" className="font-medium">
-                  Become a partner
-                  <ArrowRight className="size-4" aria-hidden />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="secondary"
-                  className="font-medium"
-                  render={<Link href="/how-it-works" />}
-                >
-                  See how it works
-                </Button>
-              </div>
+            </HumanView>
+            <AgentView>
+              <h1 className="mt-4 max-w-3xl text-balance text-4xl font-bold tracking-tight md:text-5xl">
+                Free trials only human-backed agents can claim.
+              </h1>
+              <p className="mt-5 max-w-2xl text-pretty text-lg leading-relaxed text-muted-foreground">
+                List your trial on TrialLand and reach agents that act for verified
+                humans — each human able to claim once, with a code that can&apos;t
+                be resold, shared, or farmed by a bot fleet.
+              </p>
+            </AgentView>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button
+                size="lg"
+                className="font-medium"
+                render={
+                  <a
+                    href="https://calendly.com/drewmailen33/valiron-ext-meeting"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
+                }
+              >
+                Become a partner
+                <ArrowRight className="size-4" aria-hidden />
+              </Button>
+              <Button
+                size="lg"
+                variant="secondary"
+                className="font-medium"
+                render={<Link href="/how-it-works" />}
+              >
+                See how it works
+              </Button>
             </div>
           </div>
         </section>
 
-        {/* The problem */}
         <section className="border-b border-border">
-          <div className="mx-auto max-w-6xl px-4 py-16">
-            <div className="max-w-2xl">
-              <p className="text-sm font-semibold text-sky-300">
-                The problem
-              </p>
-              <HumanView>
-                <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                  Free trials have become a Sybil magnet.
-                </h2>
-                <p className="mt-4 text-pretty text-lg leading-relaxed text-muted-foreground">
-                  A free trial is an open invitation — and bots, burner emails,
-                  and multi-account farmers have RSVP&apos;d. The same people
-                  you&apos;re trying to win are impersonated thousands of times
-                  over, and it&apos;s your margin footing the bill.
-                </p>
-              </HumanView>
-              <AgentView>
-                <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                  Agents turn trial abuse into an API call.
-                </h2>
-                <p className="mt-4 text-pretty text-lg leading-relaxed text-muted-foreground">
-                  Scripted signups were already draining trials. Now autonomous
-                  agents can spin up thousands of burner accounts in minutes —
-                  your free trial is the easiest endpoint they&apos;ll hit all
-                  day, and your margin foots the bill.
-                </p>
-              </AgentView>
-            </div>
-
-            <div className="mt-10 grid gap-6 lg:grid-cols-[1.3fr_1fr] lg:items-center">
-              <AbuseTrend />
-              <div className="grid gap-4">
-                {stats.map((s) => (
-                  <div
-                    key={s.label}
-                    className="flex items-start gap-4 rounded-2xl border border-border bg-card p-5"
-                  >
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-500/10">
-                      <s.icon className="size-5 text-sky-300" aria-hidden />
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold tracking-tight text-foreground">
-                        {s.value}
+          <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16">
+            <div className="grid gap-6 lg:grid-cols-3">
+              {workflows.map((card) => (
+                <article key={card.eyebrow} className="space-y-4">
+                  <div className="relative overflow-hidden rounded-xl border border-border/70 bg-card">
+                    <div className="relative h-48 border-b border-border/70 bg-[#0f1117] p-4 text-white">
+                      <div className="absolute inset-0 opacity-30 [background-image:radial-gradient(circle_at_1px_1px,#ffffff66_1px,transparent_1px)] [background-size:12px_12px]" />
+                      <div
+                        className={`absolute -left-16 -top-14 h-44 w-44 rounded-full bg-gradient-to-br ${card.accentA} ${card.accentB} blur-2xl`}
+                        aria-hidden
+                      />
+                      <div
+                        className="absolute inset-x-0 top-16 h-16 -skew-y-3 bg-gradient-to-r from-white/10 via-white/5 to-transparent"
+                        aria-hidden
+                      />
+                      <div className="relative">
+                        <span className="inline-flex rounded-full border border-white/20 bg-white/10 px-2.5 py-1 font-mono text-[10px] tracking-[0.14em] text-white/80">
+                          {card.chip}
+                        </span>
                       </div>
-                      <div className="text-sm font-medium text-foreground">
-                        {s.label}
-                      </div>
-                      <div className="mt-0.5 text-xs text-muted-foreground">
-                        {s.sub}
+                      <div className="relative mt-6 space-y-1 px-1">
+                        {card.title.map((line) => (
+                          <div key={line}>
+                            <span className="inline-block rounded-sm bg-white px-2 py-1 text-5xl font-bold leading-none tracking-tight text-black">
+                              {line}
+                            </span>
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-10 grid gap-4 md:grid-cols-3">
-              {painPoints.map((p) => (
-                <div
-                  key={p.title}
-                  className="rounded-2xl border border-border bg-card p-6"
-                >
-                  <div className="flex size-10 items-center justify-center rounded-xl bg-sky-500/10">
-                    <p.icon className="size-5 text-sky-300" aria-hidden />
+                    <div className="p-5">
+                      <p className="font-mono text-xs tracking-[0.14em] text-muted-foreground">
+                        {card.eyebrow}
+                      </p>
+                      <p className="mt-4 text-pretty leading-relaxed text-muted-foreground">
+                        {card.body}
+                      </p>
+                      <Button
+                        size="sm"
+                        className="mt-5 rounded-full bg-foreground text-background hover:bg-foreground/90"
+                        render={<Link href={card.href} />}
+                      >
+                        Learn more
+                        <ArrowRight className="size-3.5" />
+                      </Button>
+                    </div>
                   </div>
-                  <h3 className="mt-4 text-lg font-semibold tracking-tight">
-                    {p.title}
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-border bg-card/40">
+          <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:py-10">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {principles.map((item) => (
+                <div key={item.title}>
+                  <h3 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-foreground">
+                    <span className="size-1.5 rounded-full bg-primary" aria-hidden />
+                    {item.title}
                   </h3>
                   <p className="mt-2 text-pretty leading-relaxed text-muted-foreground">
-                    {p.body}
+                    {item.body}
                   </p>
                 </div>
               ))}
             </div>
-
-            <div className="mt-10 rounded-2xl border border-border bg-card p-6 sm:p-8">
-              <div className="grid gap-4 md:grid-cols-2">
-                <div className="rounded-xl border border-border/70 bg-background p-5">
-                  <p className="text-xs font-semibold text-muted-foreground">
-                    Option 1
-                  </p>
-                  <p className="mt-2 font-medium text-foreground">
-                    Keep the free trial
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    …and let the abuse keep eating your margin.
-                  </p>
-                </div>
-                <div className="rounded-xl border border-border/70 bg-background p-5">
-                  <p className="text-xs font-semibold text-muted-foreground">
-                    Option 2
-                  </p>
-                  <p className="mt-2 font-medium text-foreground">
-                    Kill the free trial
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    …and watch real, top-of-funnel growth slow.
-                  </p>
-                </div>
-              </div>
-              <p className="mt-6 text-balance text-lg font-medium text-foreground">
-                You shouldn&apos;t have to choose.{" "}
-                <span className="text-primary">Remove the abuse, not the trial.</span>
-              </p>
-            </div>
           </div>
         </section>
 
-        {/* The fix */}
-        <section className="border-b border-border">
-          <div className="mx-auto max-w-6xl px-4 py-16">
-            <div className="mb-8 max-w-2xl">
-              <p className="text-sm font-semibold text-primary">
-                The fix
-              </p>
-              <HumanView>
-                <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                  Verify the human, not the email.
-                </h2>
-                <p className="mt-4 text-pretty text-lg leading-relaxed text-muted-foreground">
-                  TrialLand gates every claim behind a World ID Proof of Human.
-                  You keep the trial that drives growth — while farmers, burner
-                  emails, and resold codes simply can&apos;t get through.
-                </p>
-              </HumanView>
-              <AgentView>
-                <h2 className="mt-4 text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                  Verify the human behind the agent.
-                </h2>
-                <p className="mt-4 text-pretty text-lg leading-relaxed text-muted-foreground">
-                  TrialLand gates every claim behind a World ID Proof of Human —
-                  so a human-backed agent gets exactly one trial, while bot
-                  fleets and burner farms simply can&apos;t get through.
-                </p>
-              </AgentView>
-            </div>
+        <section className="border-b border-border bg-black">
+          <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+            <p className="text-sm font-semibold text-sky-300">The problem</p>
             <HumanView>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {benefits.map((b) => (
-                  <div
-                    key={b.title}
-                    className="rounded-2xl border border-border bg-card p-6"
-                  >
-                    <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-                      <b.icon className="size-5 text-primary" aria-hidden />
-                    </div>
-                    <h3 className="mt-4 text-lg font-semibold tracking-tight">
-                      {b.title}
-                    </h3>
-                    <p className="mt-2 text-pretty leading-relaxed text-muted-foreground">
-                      {b.body}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              <h2 className="mt-4 max-w-3xl text-balance text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                Free trials have become a Sybil magnet.
+              </h2>
+              <p className="mt-4 max-w-3xl text-pretty text-lg leading-relaxed text-white/75">
+                A free trial is an open invitation — and bots, burner emails, and
+                multi-account farmers have RSVP&apos;d. The same people
+                you&apos;re trying to win are impersonated thousands of times over,
+                and it&apos;s your margin footing the bill.
+              </p>
             </HumanView>
             <AgentView>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {agentBenefits.map((b) => (
-                  <div
-                    key={b.title}
-                    className="rounded-2xl border border-border bg-card p-6"
-                  >
-                    <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-                      <b.icon className="size-5 text-primary" aria-hidden />
-                    </div>
-                    <h3 className="mt-4 text-lg font-semibold tracking-tight">
-                      {b.title}
-                    </h3>
-                    <p className="mt-2 text-pretty leading-relaxed text-muted-foreground">
-                      {b.body}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              <h2 className="mt-4 max-w-3xl text-balance text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                Agents turn trial abuse into an API call.
+              </h2>
+              <p className="mt-4 max-w-3xl text-pretty text-lg leading-relaxed text-white/75">
+                Scripted signups were already draining trials. Now autonomous
+                agents can spin up thousands of burner accounts in minutes — your
+                free trial is the easiest endpoint they&apos;ll hit all day, and
+                your margin foots the bill.
+              </p>
             </AgentView>
+
+            <div className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-[#090a0d] text-white">
+              <div className="grid gap-px bg-white/10 lg:grid-cols-[1.3fr_1fr]">
+                <div className="relative min-h-[300px] bg-[#0b0c10] p-8">
+                  <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(circle_at_20%_20%,#ffffff22_1px,transparent_1px)] [background-size:10px_10px]" />
+                  <svg
+                    className="pointer-events-none absolute inset-0 h-full w-full opacity-40"
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    aria-hidden
+                  >
+                    <path
+                      d="M8 18 C 30 10, 45 34, 60 22 S 85 18, 96 50"
+                      stroke="currentColor"
+                      strokeWidth="0.45"
+                      fill="none"
+                    />
+                    <circle cx="8" cy="18" r="0.8" fill="currentColor" />
+                    <circle cx="30" cy="10" r="0.8" fill="currentColor" />
+                    <circle cx="45" cy="34" r="0.8" fill="currentColor" />
+                    <circle cx="60" cy="22" r="0.8" fill="currentColor" />
+                    <circle cx="85" cy="18" r="0.8" fill="currentColor" />
+                    <circle cx="96" cy="50" r="0.8" fill="currentColor" />
+                  </svg>
+                  <div className="relative">
+                    <p className="font-mono text-6xl font-bold tracking-tight">
+                      {stats[0].value}
+                    </p>
+                    <p className="mt-2 font-mono text-xs tracking-[0.16em] text-white/65">
+                      FREE TRIAL ABUSE
+                    </p>
+                    <p className="mt-5 max-w-sm text-pretty text-xl text-white/75">
+                      {stats[0].label}
+                    </p>
+                    <p className="mt-2 text-sm text-white/55">{stats[0].sub}</p>
+                  </div>
+                </div>
+
+                <div className="min-h-[300px] bg-[#0b0c10] p-8">
+                  <p className="font-mono text-5xl font-bold tracking-tight">
+                    {stats[1].value}
+                  </p>
+                  <p className="mt-3 font-mono text-xs tracking-[0.16em] text-white/60">
+                    SIGNUPS LINKED TO ABUSE
+                  </p>
+                  <p className="mt-5 text-pretty text-xl text-white/75">
+                    {stats[1].label}
+                  </p>
+                  <p className="mt-2 text-sm text-white/55">{stats[1].sub}</p>
+                </div>
+              </div>
+
+              <div className="grid gap-px bg-white/10 md:grid-cols-2">
+                <div className="min-h-[220px] bg-[#0b0c10] p-8">
+                  <p className="font-mono text-5xl font-bold tracking-tight">
+                    {stats[2].value}
+                  </p>
+                  <p className="mt-3 font-mono text-xs tracking-[0.16em] text-white/60">
+                    CAC BURN
+                  </p>
+                  <p className="mt-5 text-pretty text-xl text-white/75">
+                    {stats[2].label}
+                  </p>
+                  <p className="mt-2 text-sm text-white/55">{stats[2].sub}</p>
+                </div>
+                <div className="min-h-[220px] bg-[#0b0c10] p-8">
+                  <p className="font-mono text-5xl font-bold tracking-tight">
+                    Lose-lose
+                  </p>
+                  <p className="mt-3 font-mono text-xs tracking-[0.16em] text-white/60">
+                    KEEP TRIAL OR KILL GROWTH
+                  </p>
+                  <p className="mt-5 text-pretty text-xl text-white/75">
+                    You either keep the trial and let abuse eat your margin, or
+                    kill it and watch top-of-funnel growth slow.
+                  </p>
+                  <p className="mt-2 text-sm text-white/55">
+                    Remove the abuse, not the trial.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
         <section>
-          <div className="mx-auto max-w-6xl px-4 py-14">
+          <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
             <div className="mb-6 max-w-2xl">
               <h2 className="text-balance text-2xl font-bold tracking-tight md:text-3xl">
                 Your partner view
               </h2>
               <p className="mt-3 text-pretty leading-relaxed text-muted-foreground">
-                This is exactly what a third party like Genspark or Perplexity
-                would see for codes issued from TrialLand. Claim a trial in the
-                marketplace, then watch it appear here as a privacy-preserving
-                hashed record.
+                This is exactly what a partner sees for codes issued from TrialLand:
+                privacy-preserving hashed records tied to the same verified human.
               </p>
             </div>
             <PartnerDashboard />

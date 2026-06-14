@@ -2,10 +2,15 @@
 
 import { useState, type ReactNode } from "react"
 import { IDKitWidget, VerificationLevel, type ISuccessResult } from "@worldcoin/idkit"
+import { toast } from "sonner"
 import { WorldIdModal } from "@/components/worldid-modal"
 import { sha256 } from "@/lib/crypto"
 import { getOrCreateIdentity } from "@/lib/store"
-import { worldAppId, worldIdConfigured } from "@/lib/auth-config"
+import {
+  worldAppId,
+  worldIdConfigured,
+  worldVerificationLevel,
+} from "@/lib/auth-config"
 
 export interface WorldIdGateRenderProps {
   /** Trigger the World ID verification flow. */
@@ -43,6 +48,10 @@ function RealGate({
   children,
 }: WorldIdGateProps) {
   const [pending, setPending] = useState(false)
+  const verificationLevel =
+    worldVerificationLevel === "orb"
+      ? VerificationLevel.Orb
+      : VerificationLevel.Device
 
   async function handleVerify(result: ISuccessResult) {
     setPending(true)
@@ -56,6 +65,11 @@ function RealGate({
         const data = await res.json().catch(() => ({}))
         throw new Error(data?.detail ?? "World ID verification failed")
       }
+    } catch (error) {
+      const detail =
+        error instanceof Error ? error.message : "World ID verification failed"
+      toast.error("World ID verification failed", { description: detail })
+      throw error
     } finally {
       setPending(false)
     }
@@ -66,9 +80,16 @@ function RealGate({
       app_id={worldAppId as `app_${string}`}
       action={action}
       signal={signal}
-      verification_level={VerificationLevel.Orb}
+      verification_level={verificationLevel}
       handleVerify={handleVerify}
       onSuccess={(result: ISuccessResult) => onVerified(result.nullifier_hash)}
+      onError={(error) => {
+        const code = error?.code ? `${error.code}: ` : ""
+        const detail = error?.detail ?? error?.message ?? "Please try again."
+        toast.error("World ID verification failed", {
+          description: `${code}${detail}`,
+        })
+      }}
     >
       {({ open }: { open: () => void }) => children({ verify: open, pending })}
     </IDKitWidget>

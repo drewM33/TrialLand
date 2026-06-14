@@ -8,12 +8,18 @@
  *
  *   NEXT_PUBLIC_WLD_APP_ID            World ID app id, e.g. "app_abc123"
  *   NEXT_PUBLIC_WLD_ACTION_REGISTER   World ID action for registration
+ *   NEXT_PUBLIC_WLD_VERIFICATION_LEVEL  "device" (default) or "orb"
  *   NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID  Dynamic environment id
  */
 
 export const worldAppId = process.env.NEXT_PUBLIC_WLD_APP_ID ?? ""
 export const worldActionRegister =
   process.env.NEXT_PUBLIC_WLD_ACTION_REGISTER ?? "register-trialland"
+const worldVerificationLevelRaw =
+  process.env.NEXT_PUBLIC_WLD_VERIFICATION_LEVEL ?? "device"
+/** IDKit verification level ("device" for broad compatibility, or "orb"). */
+export const worldVerificationLevel =
+  worldVerificationLevelRaw.toLowerCase() === "orb" ? "orb" : "device"
 export const dynamicEnvironmentId =
   process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID ?? ""
 

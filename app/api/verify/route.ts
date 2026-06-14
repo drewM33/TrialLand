@@ -38,12 +38,21 @@ export async function POST(req: Request) {
     )
   }
 
-  const verifyRes = (await verifyCloudProof(
-    proof,
-    appId,
-    action,
-    signal,
-  )) as IVerifyResponse
+  let verifyRes: IVerifyResponse
+  try {
+    verifyRes = (await verifyCloudProof(
+      proof,
+      appId,
+      action,
+      signal,
+    )) as IVerifyResponse
+  } catch (error) {
+    const detail =
+      error instanceof Error
+        ? error.message
+        : "World cloud verification request failed."
+    return NextResponse.json({ success: false, detail }, { status: 400 })
+  }
 
   if (verifyRes.success) {
     // Proof is valid. The per-human, per-action nullifier is in

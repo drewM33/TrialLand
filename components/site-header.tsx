@@ -7,7 +7,11 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-2.5">
+        <Link
+          href="/"
+          aria-label="Go to homepage"
+          className="relative z-10 flex shrink-0 items-center gap-2.5 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           <Image
             src="/logo-gnome-wand.svg"
             alt="TrialLand"

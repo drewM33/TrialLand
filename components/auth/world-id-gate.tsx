@@ -1,11 +1,18 @@
 "use client"
 
-import { useState, type ReactNode } from "react"
-import { IDKitWidget, VerificationLevel, type ISuccessResult } from "@worldcoin/idkit"
+import { useCallback, useState, type ReactNode } from "react"
+import { toast } from "sonner"
+import {
+  IDKitRequestWidget,
+  proofOfHuman,
+  type RpContext,
+  type IDKitResult,
+} from "@worldcoin/idkit"
 import { WorldIdModal } from "@/components/worldid-modal"
 import { sha256 } from "@/lib/crypto"
 import { getOrCreateIdentity } from "@/lib/store"
-import { worldAppId, worldIdConfigured } from "@/lib/auth-config"
+import { extractNullifier } from "@/lib/world-id"
+import { worldAppId, worldIdConfigured, worldRpId } from "@/lib/auth-config"
 
 export interface WorldIdGateRenderProps {
   /** Trigger the World ID verification flow. */
@@ -28,9 +35,8 @@ interface WorldIdGateProps {
 }
 
 /**
- * Renders World ID (World 3.0 / IDKit) verification. Uses the real IDKit widget
- * + server-side cloud verification when configured, and falls back to the
- * simulated World App scan otherwise so the flow works in the demo.
+ * Renders World ID verification via IDKit 4.x when configured, and falls back
+ * to the simulated World App scan otherwise so the flow works in the demo.
  */
 export function WorldIdGate(props: WorldIdGateProps) {
   return worldIdConfigured ? <RealGate {...props} /> : <DemoGate {...props} />
@@ -42,36 +48,99 @@ function RealGate({
   onVerified,
   children,
 }: WorldIdGateProps) {
+  const [open, setOpen] = useState(false)
   const [pending, setPending] = useState(false)
+  const [rpContext, setRpContext] = useState<RpContext | null>(null)
 
-  async function handleVerify(result: ISuccessResult) {
+  const startVerify = useCallback(async () => {
+    setPending(true)
+    try {
+      const res = await fetch("/api/worldid/rp-signature", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ action }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(
+          (data?.detail as string | undefined) ??
+            "Could not start World ID verification.",
+        )
+      }
+
+      const data = (await res.json()) as {
+        sig: string
+        nonce: string
+        created_at: number
+        expires_at: number
+      }
+
+      setRpContext({
+        rp_id: worldRpId as `rp_${string}`,
+        nonce: data.nonce,
+        created_at: data.created_at,
+        expires_at: data.expires_at,
+        signature: data.sig,
+      })
+      setOpen(true)
+    } catch (error) {
+      toast.error("World ID unavailable", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "Could not start World ID verification.",
+      })
+    } finally {
+      setPending(false)
+    }
+  }, [action])
+
+  async function handleVerify(result: IDKitResult) {
     setPending(true)
     try {
       const res = await fetch("/api/verify", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ proof: result, action, signal }),
+        body: JSON.stringify(result),
       })
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-        throw new Error(data?.detail ?? "World ID verification failed")
+        throw new Error(
+          (data?.detail as string | undefined) ?? "World ID verification failed",
+        )
       }
     } finally {
       setPending(false)
     }
   }
 
+  function handleOpenChange(nextOpen: boolean) {
+    setOpen(nextOpen)
+    if (!nextOpen) {
+      setRpContext(null)
+    }
+  }
+
+  const preset = signal ? proofOfHuman({ signal }) : proofOfHuman()
+
   return (
-    <IDKitWidget
-      app_id={worldAppId as `app_${string}`}
-      action={action}
-      signal={signal}
-      verification_level={VerificationLevel.Orb}
-      handleVerify={handleVerify}
-      onSuccess={(result: ISuccessResult) => onVerified(result.nullifier_hash)}
-    >
-      {({ open }: { open: () => void }) => children({ verify: open, pending })}
-    </IDKitWidget>
+    <>
+      {children({ verify: () => void startVerify(), pending })}
+      {rpContext ? (
+        <IDKitRequestWidget
+          key={`${action}:${signal ?? ""}:${rpContext.nonce}`}
+          open={open}
+          onOpenChange={handleOpenChange}
+          app_id={worldAppId as `app_${string}`}
+          action={action}
+          rp_context={rpContext}
+          allow_legacy_proofs={true}
+          preset={preset}
+          handleVerify={handleVerify}
+          onSuccess={(result) => onVerified(extractNullifier(result))}
+        />
+      ) : null}
+    </>
   )
 }
 

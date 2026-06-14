@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button"
 import { WorldIdGate } from "@/components/auth/world-id-gate"
 import { registerWallet, type Registration } from "@/lib/registry"
 import { setSession } from "@/lib/session"
+import { getOrCreateIdentity } from "@/lib/store"
 import { sha256, truncateHash } from "@/lib/crypto"
 import {
   dynamicConfigured,
@@ -41,10 +42,12 @@ export function RegisterFlow() {
 
 function DynamicRegisterFlow() {
   const { primaryWallet, setShowAuthFlow } = useDynamicContext()
-  const [phase, setPhase] = useState<Phase>("verify")
+  const [phase, setPhase] = useState<Phase>("wallet")
   const [nullifier, setNullifier] = useState<string | null>(null)
   const [registration, setRegistration] = useState<Registration | null>(null)
   const registering = useRef(false)
+
+  const walletAddress = primaryWallet?.address ?? null
 
   const completeRegistration = useCallback(
     async (n: string, wallet: string) => {
@@ -66,7 +69,7 @@ function DynamicRegisterFlow() {
         )
       } catch {
         registering.current = false
-        setPhase("wallet")
+        setPhase("verify")
         toast.error("Registration failed", {
           description: "Could not register your wallet. Try again.",
         })
@@ -75,21 +78,23 @@ function DynamicRegisterFlow() {
     [],
   )
 
-  // Once we have both a verified human and a Dynamic wallet, register on chain.
+  // Advance to World ID once Dynamic provisions a wallet.
   useEffect(() => {
-    if (phase === "wallet" && nullifier && primaryWallet?.address) {
-      void completeRegistration(nullifier, primaryWallet.address)
+    if (phase === "wallet" && walletAddress) {
+      setPhase("verify")
     }
-  }, [phase, nullifier, primaryWallet, completeRegistration])
+  }, [phase, walletAddress])
 
   function handleVerified(n: string) {
     setNullifier(n)
-    setPhase("wallet")
+    if (walletAddress) {
+      void completeRegistration(n, walletAddress)
+    }
   }
 
   function handleCreateWallet() {
-    if (primaryWallet?.address && nullifier) {
-      void completeRegistration(nullifier, primaryWallet.address)
+    if (walletAddress) {
+      setPhase("verify")
     } else {
       setShowAuthFlow(true)
     }
@@ -98,9 +103,10 @@ function DynamicRegisterFlow() {
   return (
     <WorldIdGate
       action={worldActionRegister}
+      signal={walletAddress ?? undefined}
       onVerified={handleVerified}
       modalTitle="Register with World ID"
-      modalDescription="Prove you're a unique human to register. No personal data is shared."
+      modalDescription="Prove you're a unique human and bind this proof to your new wallet."
       actionLabel="register your wallet"
     >
       {({ verify, pending }) => (
@@ -110,7 +116,7 @@ function DynamicRegisterFlow() {
           nullifier={nullifier}
           registration={registration}
           verifyPending={pending}
-          walletAddress={primaryWallet?.address ?? null}
+          walletAddress={walletAddress}
           onVerify={verify}
           onCreateWallet={handleCreateWallet}
         />
@@ -124,26 +130,16 @@ function DynamicRegisterFlow() {
 /* -------------------------------------------------------------------------- */
 
 function DemoRegisterFlow() {
-  const [phase, setPhase] = useState<Phase>("verify")
+  const [phase, setPhase] = useState<Phase>("wallet")
   const [nullifier, setNullifier] = useState<string | null>(null)
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
   const [registration, setRegistration] = useState<Registration | null>(null)
 
-  function handleVerified(n: string) {
-    setNullifier(n)
-    setPhase("wallet")
-  }
-
-  async function handleCreateWallet() {
-    if (!nullifier) return
+  async function completeDemoRegistration(n: string, wallet: string) {
     setPhase("registering")
-    // Simulate Dynamic deterministically deriving an embedded wallet from the
-    // World ID nullifier, then register it on chain.
-    const wallet = "0x" + (await sha256(`wallet:${nullifier}`)).slice(0, 40)
-    setWalletAddress(wallet)
-    const { record, alreadyRegistered } = await registerWallet(nullifier, wallet)
+    const { record, alreadyRegistered } = await registerWallet(n, wallet)
     setRegistration(record)
-    setSession({ nullifier, wallet })
+    setSession({ nullifier: n, wallet })
     setPhase("done")
     toast.success(
       alreadyRegistered ? "Welcome back" : "Wallet registered on chain",
@@ -155,12 +151,31 @@ function DemoRegisterFlow() {
     )
   }
 
+  function handleVerified(n: string) {
+    setNullifier(n)
+    if (walletAddress) {
+      void completeDemoRegistration(n, walletAddress)
+    }
+  }
+
+  async function handleCreateWallet() {
+    if (walletAddress) {
+      setPhase("verify")
+      return
+    }
+    const identity = getOrCreateIdentity()
+    const wallet = "0x" + (await sha256(`wallet:${identity}`)).slice(0, 40)
+    setWalletAddress(wallet)
+    setPhase("verify")
+  }
+
   return (
     <WorldIdGate
       action={worldActionRegister}
+      signal={walletAddress ?? undefined}
       onVerified={handleVerified}
       modalTitle="Register with World ID"
-      modalDescription="Prove you're a unique human to register. No personal data is shared."
+      modalDescription="Prove you're a unique human and bind this proof to your new wallet."
       actionLabel="register your wallet"
     >
       {({ verify }) => (
@@ -205,7 +220,8 @@ function RegisterView({
   onCreateWallet,
 }: RegisterViewProps) {
   const router = useRouter()
-  const verifyDone = phase !== "verify"
+  const walletReady = phase !== "wallet"
+  const verifyDone = nullifier !== null || phase === "registering" || phase === "done"
   const walletDone = phase === "done"
 
   if (phase === "done" && registration) {
@@ -253,30 +269,30 @@ function RegisterView({
         Register your identity
       </div>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground text-pretty">
-        Verify you&apos;re a unique human with World ID, then we create your
-        wallet on Dynamic and register it on {registryChain.name}. One human, one
-        wallet.
+        Create your wallet on Dynamic, then verify you&apos;re a unique human with
+        World ID bound to that wallet, and register it on {registryChain.name}.
+        One human, one wallet.
       </p>
 
       <ol className="mt-5 space-y-3">
         <Step
           index={1}
-          icon={<ShieldCheck className="size-4" />}
-          title="Prove you're human"
-          body="World ID generates a zero-knowledge Proof of Human."
-          state={verifyDone ? "done" : "active"}
-        />
-        <Step
-          index={2}
           icon={<Wallet className="size-4" />}
           title="Create your wallet"
           body={
             mode === "live"
               ? "Dynamic provisions an embedded wallet for you."
-              : "A wallet is derived from your World ID nullifier."
+              : "A demo wallet is generated locally for this session."
           }
+          state={walletReady ? "done" : "active"}
+        />
+        <Step
+          index={2}
+          icon={<ShieldCheck className="size-4" />}
+          title="Prove you're human"
+          body="World ID generates a zero-knowledge Proof of Human bound to your wallet."
           state={
-            walletDone ? "done" : phase === "verify" ? "todo" : "active"
+            verifyDone ? "done" : phase === "verify" ? "active" : "todo"
           }
         />
         <Step
@@ -289,25 +305,26 @@ function RegisterView({
       </ol>
 
       <div className="mt-6">
+        {phase === "wallet" && (
+          <Button size="lg" className="w-full" onClick={onCreateWallet}>
+            <Wallet className="size-4" />
+            {mode === "live" ? "Create wallet with Dynamic" : "Create my wallet"}
+          </Button>
+        )}
+
         {phase === "verify" && (
-          <Button size="lg" className="w-full" onClick={onVerify} disabled={verifyPending}>
+          <Button
+            size="lg"
+            className="w-full"
+            onClick={onVerify}
+            disabled={verifyPending || !walletAddress}
+          >
             {verifyPending ? (
               <Loader2 className="size-4 animate-spin" />
             ) : (
               <ShieldCheck className="size-4" />
             )}
             Verify with World ID
-          </Button>
-        )}
-
-        {phase === "wallet" && (
-          <Button size="lg" className="w-full" onClick={onCreateWallet}>
-            <Wallet className="size-4" />
-            {walletAddress
-              ? "Register this wallet"
-              : mode === "live"
-                ? "Create wallet with Dynamic"
-                : "Create my wallet"}
           </Button>
         )}
 
@@ -318,6 +335,13 @@ function RegisterView({
           </Button>
         )}
       </div>
+
+      {walletAddress && phase !== "wallet" && phase !== "done" && (
+        <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-primary">
+          <Check className="size-3.5" />
+          Wallet ready · {truncateHash(walletAddress)}
+        </p>
+      )}
 
       {nullifier && phase !== "done" && (
         <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-primary">

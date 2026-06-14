@@ -1,28 +1,24 @@
 import { NextResponse } from "next/server"
-import {
-  verifyCloudProof,
-  type IVerifyResponse,
-} from "@worldcoin/idkit-core/backend"
-import type { ISuccessResult } from "@worldcoin/idkit-core"
+import type { IDKitResult } from "@worldcoin/idkit-core"
+
+const VERIFY_URL = "https://developer.world.org/api/v4/verify"
 
 /**
- * Verifies a World ID (World 3.0) proof server-side via the Developer Portal's
- * cloud verify. The client never gets to assert its own uniqueness — the proof
- * is validated here against the app's `app_id` + action before we let the human
- * register a wallet.
+ * Verifies a World ID proof server-side via the Developer Portal v4 API.
+ * The client forwards the raw IDKit result payload — no remapping required.
  */
 export async function POST(req: Request) {
-  const appId = process.env.NEXT_PUBLIC_WLD_APP_ID as `app_${string}` | undefined
-  if (!appId?.startsWith("app_")) {
+  const rpId = process.env.NEXT_PUBLIC_WLD_RP_ID ?? process.env.WORLD_RP_ID
+  if (!rpId?.startsWith("rp_") && !rpId?.startsWith("app_")) {
     return NextResponse.json(
-      { success: false, detail: "World ID is not configured on the server." },
+      { success: false, detail: "World ID RP id is not configured on the server." },
       { status: 500 },
     )
   }
 
-  let body: { proof?: ISuccessResult; action?: string; signal?: string }
+  let proof: IDKitResult
   try {
-    body = await req.json()
+    proof = (await req.json()) as IDKitResult
   } catch {
     return NextResponse.json(
       { success: false, detail: "Invalid request body." },
@@ -30,29 +26,32 @@ export async function POST(req: Request) {
     )
   }
 
-  const { proof, action, signal } = body
-  if (!proof || !action) {
+  if (!proof?.protocol_version || !proof.responses?.length) {
     return NextResponse.json(
-      { success: false, detail: "Missing proof or action." },
+      { success: false, detail: "Missing proof payload." },
       { status: 400 },
     )
   }
 
-  const verifyRes = (await verifyCloudProof(
-    proof,
-    appId,
-    action,
-    signal,
-  )) as IVerifyResponse
+  const verifyRes = await fetch(`${VERIFY_URL}/${rpId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(proof),
+  })
 
-  if (verifyRes.success) {
-    // Proof is valid. The per-human, per-action nullifier is in
-    // `proof.nullifier_hash` and is what the client binds to the wallet.
-    return NextResponse.json({ success: true }, { status: 200 })
+  const data = (await verifyRes.json().catch(() => ({}))) as {
+    success?: boolean
+    detail?: string
+    code?: string
+    nullifier?: string
+  }
+
+  if (verifyRes.ok && data.success) {
+    return NextResponse.json({ success: true, nullifier: data.nullifier }, { status: 200 })
   }
 
   return NextResponse.json(
-    { ...verifyRes, success: false },
-    { status: 400 },
+    { ...data, success: false },
+    { status: verifyRes.ok ? 400 : verifyRes.status },
   )
 }

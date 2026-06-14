@@ -240,7 +240,7 @@ function RegisterView({
         </div>
 
         <dl className="mt-5 space-y-2 rounded-xl border border-border bg-background p-4 text-xs">
-          <Row label="Wallet" value={truncateHash(registration.wallet)} />
+          <Row label="Wallet" value={registration.wallet} breakValue />
           <Row label="Human nullifier" value={truncateHash(registration.nullifier)} />
           <Row label="Registry tx" value={truncateHash(registration.txHash)} />
           <Row label="Block" value={`#${registration.blockNumber.toLocaleString()}`} />
@@ -337,8 +337,8 @@ function RegisterView({
 
       {walletAddress && phase !== "wallet" && phase !== "done" && (
         <p className="mt-3 flex items-center justify-center gap-1.5 text-xs text-primary">
-          <Check className="size-3.5" />
-          Wallet ready · {truncateHash(walletAddress)}
+          <Check className="size-3.5 shrink-0" />
+          <span className="break-all">Wallet ready · {walletAddress}</span>
         </p>
       )}
 
@@ -359,11 +359,26 @@ function RegisterView({
   )
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({
+  label,
+  value,
+  breakValue = false,
+}: {
+  label: string
+  value: string
+  breakValue?: boolean
+}) {
   return (
     <div className="flex items-center justify-between gap-2">
-      <span className="text-muted-foreground">{label}</span>
-      <code className="font-mono text-foreground">{value}</code>
+      <span className="shrink-0 text-muted-foreground">{label}</span>
+      <code
+        className={
+          "font-mono text-foreground" +
+          (breakValue ? " break-all text-right" : "")
+        }
+      >
+        {value}
+      </code>
     </div>
   )
 }

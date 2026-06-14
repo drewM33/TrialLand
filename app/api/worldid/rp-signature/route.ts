@@ -6,10 +6,23 @@ import { signRequest } from "@worldcoin/idkit-core/signing"
  * The signing key must never be exposed to the client.
  */
 export async function POST(req: Request) {
-  const signingKey = process.env.WORLD_RP_SIGNING_KEY
-  if (!signingKey) {
+  const rawKey = process.env.WORLD_RP_SIGNING_KEY
+  if (!rawKey) {
     return NextResponse.json(
       { success: false, detail: "World ID RP signing key is not configured." },
+      { status: 500 },
+    )
+  }
+
+  // Accept the key with or without a `0x` prefix / surrounding whitespace.
+  const signingKey = rawKey.trim().replace(/^0x/i, "")
+  if (!/^[0-9a-fA-F]+$/.test(signingKey)) {
+    return NextResponse.json(
+      {
+        success: false,
+        detail:
+          "WORLD_RP_SIGNING_KEY must be a hex-encoded signing key. It looks like the RP ID (rp_...) was used instead of the secret signing key.",
+      },
       { status: 500 },
     )
   }

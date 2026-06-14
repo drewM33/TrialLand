@@ -1,7 +1,7 @@
 import { createPublicClient, http, type PublicClient } from "viem"
 import { sepolia } from "viem/chains"
 
-/** VerifyLegacyV3 — deployed TrialCounter contract ABI (Foundry artifact). */
+/** TrialRegistrar — deployed contract ABI (Foundry artifact). */
 export const trialCounterAbi = [
   {
     type: "constructor",
@@ -28,7 +28,7 @@ export const trialCounterAbi = [
       {
         name: "t",
         type: "tuple",
-        internalType: "struct VerifyLegacyV3.Trial",
+        internalType: "struct TrialRegistrar.Trial",
         components: [
           { name: "id", type: "bytes32", internalType: "bytes32" },
           { name: "maxRedemptions", type: "uint256", internalType: "uint256" },
@@ -88,9 +88,10 @@ export const trialCounterAbi = [
   },
   {
     type: "function",
-    name: "verifyLegacyAndExecute",
+    name: "registerRecipient",
     inputs: [
       { name: "root", type: "uint256", internalType: "uint256" },
+      { name: "signal", type: "address", internalType: "address" },
       { name: "signalHash", type: "uint256", internalType: "uint256" },
       { name: "nullifierHash", type: "uint256", internalType: "uint256" },
       {
@@ -153,10 +154,10 @@ export const trialCounterChainId = Number(
   process.env.NEXT_PUBLIC_CONTRACT_CHAIN_ID ?? trialCounterChain.id,
 )
 
-/** Default: Sepolia deployment from deployment.txt */
+/** Default: latest TrialRegistrar Sepolia deployment from deployment.txt */
 export const trialCounterAddress = (process.env
   .NEXT_PUBLIC_TRIAL_COUNTER_ADDRESS ??
-  "0xae51411C5Bf19B3d2FD19aD135B662e831390ffA") as `0x${string}`
+  "0x99C9d5363AE49f264b2653B7c004008e0aef228a") as `0x${string}`
 
 export const trialCounterConfigured = /^0x[a-fA-F0-9]{40}$/.test(
   trialCounterAddress,

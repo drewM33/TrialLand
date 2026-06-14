@@ -272,7 +272,7 @@ export function TrialCounterTest() {
 
   const write = useCallback(
     async (
-      functionName: "addTrial" | "redeemTrial" | "verifyLegacyAndExecute",
+      functionName: "addTrial" | "redeemTrial" | "registerRecipient",
       args: readonly unknown[],
     ) => {
       const walletClient = await getWalletClient()
@@ -549,14 +549,20 @@ export function TrialCounterTest() {
         />
 
         <FunctionCard
-          name="verifyLegacyAndExecute"
+          name="registerRecipient"
           kind="write"
-          signature="verifyLegacyAndExecute(uint256 root, uint256 signalHash, uint256 nullifierHash, uint256 externalNullifierHash, uint256[8] proof)"
-          description="Submit a World ID legacy proof on chain. Paste proof as 8 comma-separated uint256 values."
+          signature="registerRecipient(uint256 root, address signal, uint256 signalHash, uint256 nullifierHash, uint256 externalNullifierHash, uint256[8] proof)"
+          description="Submit a World ID legacy proof on chain to register a recipient. Paste proof as 8 comma-separated uint256 values."
           disabled={!walletReady}
           disabledHint="Connect a wallet"
           fields={[
             { name: "root", label: "root (uint256)", placeholder: "0" },
+            {
+              name: "signal",
+              label: "signal (address)",
+              placeholder: address ?? "0x…",
+              defaultValue: address ?? "",
+            },
             { name: "signalHash", label: "signalHash (uint256)", placeholder: "0" },
             { name: "nullifierHash", label: "nullifierHash (uint256)", placeholder: "0" },
             {
@@ -572,6 +578,7 @@ export function TrialCounterTest() {
           ]}
           run={async (v) => {
             const root = parseBigInt(v.root, "root")
+            const signal = requireAddress(v.signal, "signal")
             const signalHash = parseBigInt(v.signalHash, "signalHash")
             const nullifierHash = parseBigInt(v.nullifierHash, "nullifierHash")
             const externalNullifierHash = parseBigInt(
@@ -597,8 +604,9 @@ export function TrialCounterTest() {
               bigint,
               bigint,
             ]
-            const hash = await write("verifyLegacyAndExecute", [
+            const hash = await write("registerRecipient", [
               root,
+              signal,
               signalHash,
               nullifierHash,
               externalNullifierHash,

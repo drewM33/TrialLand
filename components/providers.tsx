@@ -52,6 +52,9 @@ export function Providers({ children }: { children: ReactNode }) {
           evmNetworks: (networks) =>
             mergeNetworks(evmNetworkOverrides, networks),
         },
+        // Force Dynamic to surface its confirmation modal before the embedded
+        // wallet signs a message or submits a transaction.
+        transactionConfirmation: { required: false },
       }}
     >
       {children}

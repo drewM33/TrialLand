@@ -8,10 +8,20 @@ import {
   type RpContext,
   type IDKitResult,
 } from "@worldcoin/idkit"
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core"
+import { isEthereumWallet } from "@dynamic-labs/ethereum"
+import type { WalletClient } from "viem"
 import { WorldIdModal } from "@/components/worldid-modal"
-import { sha256 } from "@/lib/crypto"
+import { sha256, truncateHash } from "@/lib/crypto"
 import { getOrCreateIdentity } from "@/lib/store"
 import { extractNullifier } from "@/lib/world-id"
+import { parseLegacyProofForContract } from "@/lib/world-id-onchain"
+import {
+  trialCounterAbi,
+  trialCounterAddress,
+  trialCounterChain,
+  trialCounterChainId,
+} from "@/lib/trial-counter"
 import { worldAppId, worldIdConfigured, worldRpId } from "@/lib/auth-config"
 
 export interface WorldIdGateRenderProps {
@@ -51,6 +61,7 @@ function RealGate({
   const [open, setOpen] = useState(false)
   const [pending, setPending] = useState(false)
   const [rpContext, setRpContext] = useState<RpContext | null>(null)
+  const { primaryWallet } = useDynamicContext()
 
   const startVerify = useCallback(async () => {
     setPending(true)
@@ -96,19 +107,60 @@ function RealGate({
   }, [action])
 
   async function handleVerify(result: IDKitResult) {
+    console.log("HandleVerify ________________>>>>>>>>", result)
     setPending(true)
     try {
-      const res = await fetch("/api/verify", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(result),
-      })
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
+      if (!primaryWallet || !isEthereumWallet(primaryWallet)) {
         throw new Error(
-          (data?.detail as string | undefined) ?? "World ID verification failed",
+          "Connect an Ethereum wallet before verifying World ID on-chain.",
         )
       }
+
+      // Decode the IDKit 3.0 legacy proof into the contract's call args.
+      const { root, signalHash, nullifierHash, externalNullifierHash, proof } =
+        parseLegacyProofForContract(result, { action })
+
+      const walletClient = (await primaryWallet.getWalletClient(
+        String(trialCounterChainId),
+      )) as WalletClient
+      const account = walletClient.account
+      if (!account) throw new Error("Wallet account unavailable.")
+
+      // The proof's signalHash is derived from the address bound into the proof
+      // (the wallet address), which TrialRegistrar re-derives from `signal`.
+      const signalAddress = (signal as `0x${string}` | undefined) ?? account.address
+      console.log("signalAddress ________________>>>>>>>>", signalAddress)
+      console.log("signalHash ________________>>>>>>>>", signalHash)
+     
+      const hash = await walletClient.writeContract({
+        address: trialCounterAddress,
+        abi: trialCounterAbi,
+        functionName: "registerRecipient",
+        args: [
+          root,
+          signalAddress,
+          signalHash,
+          nullifierHash,
+          externalNullifierHash,
+          proof,
+        ],
+        account,
+        chain: trialCounterChain,
+      })
+      console.log("TX Hash ________________>>>>>>>>", hash)
+      toast.success("World ID verified on-chain", {
+        description: truncateHash(hash, 10, 8),
+      })
+    } catch (error) {
+      console.error("Error ________________>>>>>>>>", error)
+      // Surface and rethrow so IDKit treats verification as failed and skips onSuccess.
+      toast.error("On-chain verification failed", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "Could not submit the World ID proof on-chain.",
+      })
+      throw error
     } finally {
       setPending(false)
     }

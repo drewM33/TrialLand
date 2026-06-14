@@ -9,12 +9,14 @@ import {
 } from "viem"
 import { worldAppId, worldActionRegister } from "@/lib/auth-config"
 
-const SNARK_SCALAR_FIELD =
-  21888242871839275222246405745257275088548364400416034343698204186575808495617n
-
-/** Matches Solidity `ByteHasher.hashToField`. */
+/**
+ * Matches World ID's Solidity `ByteHasher.hashToField`:
+ * `uint256(keccak256(value)) >> 8`. This is the same reduction IDKit uses when
+ * it derives `signal_hash` and the external nullifier baked into the proof, so
+ * a `% SNARK_SCALAR_FIELD` reduction here would mismatch and revert `verifyProof`.
+ */
 export function hashToField(data: Hex): bigint {
-  return BigInt(keccak256(data)) % SNARK_SCALAR_FIELD
+  return BigInt(keccak256(data)) >> BigInt(8)
 }
 
 /**
@@ -61,7 +63,7 @@ function pickOrbResponse(responses: ResponseItemV3[]): ResponseItemV3 {
   return orb
 }
 
-/** Decode IDKit v3 proof fields for `verifyLegacyAndExecute`. */
+/** Decode IDKit v3 proof fields for `registerRecipient`. */
 export function parseLegacyProofForContract(
   result: IDKitResult,
   options?: { appId?: string; action?: string; externalNullifierHash?: bigint },

@@ -6,7 +6,7 @@ import { TrialCounterTest } from "@/components/test/trial-counter-test"
 export const metadata: Metadata = {
   title: "TrialCounter test — TrialLand",
   description:
-    "Dev sandbox for calling all VerifyLegacyV3 (TrialCounter) contract functions via Dynamic wallet.",
+    "Dev sandbox for calling all TrialRegistrar contract functions via Dynamic wallet.",
   robots: { index: false, follow: false },
 }
 
@@ -24,7 +24,7 @@ export default function TrialCounterTestPage() {
               TrialCounter contract test
             </h1>
             <p className="mt-2 text-pretty text-sm text-muted-foreground">
-              Exercise every function on the deployed VerifyLegacyV3 contract
+              Exercise every function on the deployed TrialRegistrar contract
               using your Dynamic wallet on Sepolia.
             </p>
           </div>

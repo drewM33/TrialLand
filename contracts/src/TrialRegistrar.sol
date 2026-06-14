@@ -9,7 +9,7 @@ interface IWorldID {
     ) external view;
 }
 
-contract VerifyLegacyV3 {
+contract TrialRegistrar {
     IWorldID public immutable worldIdRouter;
     uint256 public constant GROUP_ID = 1; // Orb
     mapping(uint256 => bool) public nullifierHashes;
@@ -32,9 +32,12 @@ contract VerifyLegacyV3 {
     constructor(IWorldID _worldIdRouter) {
         worldIdRouter = _worldIdRouter;
     }
-
-    function verifyLegacyAndExecute(
+    function hashToField(bytes memory value) internal pure returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(value))) >> 8;
+    }
+    function registerRecipient(
         uint256 root,
+        address signal,
         uint256 signalHash,
         uint256 nullifierHash,
         uint256 externalNullifierHash,
@@ -50,13 +53,17 @@ contract VerifyLegacyV3 {
             externalNullifierHash,
             proof
         );
-
+        require(signalHash == uint256(hashToField(abi.encodePacked(signal))), "Invalid Signal");
         nullifierHashes[nullifierHash] = true;
-        addressRegistered[address(uint160(signalHash))] = true;
+        addressRegistered[signal] = true;
 
         // Execute protected business logic here.
     }
     function addTrial(Trial memory t) public {
+        require(t.id != bytes32(0), "Invalid Trial ID");
+        require(t.maxRedemptions > 0, "Invalid Max Redemptions");
+        require(t.currentRedemptions ==0, "Invalid Current Redemptions");
+        require(t.start < t.end +3600, "Invalid Time Window");
         totalTrials += 1;
         trials[totalTrials] = t;
     }

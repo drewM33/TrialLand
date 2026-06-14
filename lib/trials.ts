@@ -36,7 +36,7 @@ export const trials: Trial[] = [
     category: "AI Assistant",
     tagline: "Ask anything, create anything",
     description:
-      "The all-in-one AI workspace — slides, sheets, docs, chat, image and video from a single agent. Your human-verified trial unlocks 30 days of Genspark Plus.",
+      "An all-in-one AI agent that runs autonomous Super Agent workflows — researching, completing multi-step tasks, and generating slides, sheets, docs, images, and video from a single chat.",
     trialLength: "30-day trial",
     perk: "Plus · Super Agent",
     color: "#ff5a1f",
@@ -53,7 +53,7 @@ export const trials: Trial[] = [
     category: "Productivity",
     tagline: "The AI notepad for back-to-back meetings",
     description:
-      "Notes, actions and memory — handled for you, quietly. Verify once and claim 3 months of Granola Pro, non-transferable.",
+      "An AI notetaker that transcribes your meetings and turns them into structured summaries and action items — capturing system audio directly, with no bot joining the call.",
     trialLength: "3-month trial",
     perk: "Pro · Unlimited notes",
     color: "#eae8e1",
@@ -70,7 +70,7 @@ export const trials: Trial[] = [
     category: "Research",
     tagline: "Where knowledge begins",
     description:
-      "The answer engine with cited, real-time sources. Your verified trial includes 1 month of Perplexity Pro with advanced models.",
+      "An AI answer engine that responds to questions with concise, up-to-date answers backed by cited web sources, with follow-ups and focused search modes.",
     trialLength: "1-month trial",
     perk: "Pro · Pro Search",
     color: "#20b8cd",
@@ -87,7 +87,7 @@ export const trials: Trial[] = [
     category: "AI Assistant",
     tagline: "AI assistants that run your business",
     description:
-      "Done-for-you AI helpers for marketing, support and ops, built on frontier LLMs. Verified humans unlock a 14-day Sintra X trial, one per human.",
+      "A suite of ready-made AI helpers that handle marketing, sales, support, and operations tasks from a single chat-style dashboard.",
     trialLength: "14-day trial",
     perk: "Sintra X",
     color: "#ff4d8d",
@@ -104,7 +104,7 @@ export const trials: Trial[] = [
     category: "Design",
     tagline: "A new medium for presenting ideas",
     description:
-      "Generate polished decks, docs and websites from a single prompt, powered by LLMs. Claim a verified 1-month Gamma Pro trial.",
+      "An AI design tool that turns a single prompt into polished presentations, documents, and websites — handling layout, copy, and visuals automatically.",
     trialLength: "1-month trial",
     perk: "Pro",
     color: "#2b8aef",
@@ -120,7 +120,7 @@ export const trials: Trial[] = [
     category: "Coding",
     tagline: "The AI code editor",
     description:
-      "Build software faster with an editor designed for pair-programming with AI. Your verified trial unlocks 14 days of Cursor Pro.",
+      "An AI-first code editor (built on VS Code) that writes, edits, and refactors code through natural-language chat, inline edits, and codebase-aware autocomplete.",
     trialLength: "14-day trial",
     perk: "Pro · Unlimited",
     color: "#1f2937",
@@ -136,7 +136,7 @@ export const trials: Trial[] = [
     category: "Writing",
     tagline: "AI for marketing teams",
     description:
-      "On-brand copy, campaigns and content at scale. Verified humans get a 30-day Jasper Creator trial, non-transferable.",
+      "An AI content platform for marketing teams that produces on-brand copy for ads, blogs, emails, and campaigns, with a shared brand voice across outputs.",
     trialLength: "30-day trial",
     perk: "Creator",
     color: "#ff7a59",
@@ -151,7 +151,7 @@ export const trials: Trial[] = [
     category: "Writing",
     tagline: "Go-to-market on autopilot",
     description:
-      "AI workflows for sales and marketing content. Claim a verified 14-day Pro trial for one human.",
+      "A go-to-market AI platform that automates sales and marketing workflows, generating outbound copy and content from your own data and prompts.",
     trialLength: "14-day trial",
     perk: "Pro",
     color: "#2f6df6",
@@ -166,7 +166,7 @@ export const trials: Trial[] = [
     category: "Coding",
     tagline: "Build apps by chatting",
     description:
-      "Turn ideas into full-stack apps with natural language. Your verified trial unlocks 1 month of Lovable Pro.",
+      "An AI app builder that turns natural-language prompts into full-stack web apps you can preview, edit, and deploy — no setup required.",
     trialLength: "1-month trial",
     perk: "Pro",
     color: "#ff4d6d",
@@ -182,7 +182,7 @@ export const trials: Trial[] = [
     category: "Coding",
     tagline: "Code, deploy, ship — with AI",
     description:
-      "Build and host apps with Replit Agent. Verified humans claim a 30-day Replit Core trial.",
+      "A browser-based coding platform whose AI Agent builds, runs, and deploys complete apps from a prompt — write, host, and ship without local setup.",
     trialLength: "30-day trial",
     perk: "Core · Agent",
     color: "#f26207",
@@ -197,7 +197,7 @@ export const trials: Trial[] = [
     category: "Voice",
     tagline: "The most realistic AI voices",
     description:
-      "Lifelike text-to-speech, dubbing and voice cloning. Claim a verified 2-month Creator trial, one per human.",
+      "An AI voice platform for ultra-realistic text-to-speech, dubbing, and voice cloning across dozens of languages and use cases.",
     trialLength: "2-month trial",
     perk: "Creator",
     color: "#0b0b0b",
@@ -212,7 +212,7 @@ export const trials: Trial[] = [
     category: "Design",
     tagline: "AI-native storytelling",
     description:
-      "Generate polished presentations and decks from a prompt. Your verified trial includes 14 days of Tome Pro.",
+      "An AI storytelling tool that generates presentation-style decks and pages from a prompt, formatting copy and visuals into a narrative automatically.",
     trialLength: "14-day trial",
     perk: "Pro",
     color: "#fa3c3c",

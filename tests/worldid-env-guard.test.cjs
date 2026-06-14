@@ -7,6 +7,7 @@ const rootDir = path.resolve(__dirname, "..")
 
 const deprecatedWorldIdValues = [
   "register-trialland",
+  "NEXT_PUBLIC_WLD_VERIFICATION_LEVEL",
   "app_2cbc42a8ce3b619da56e06b5079b5558",
   "rp_360e04a1542a31be",
   "0x57c93126e9ed9371aea1e1bc25331a1e4a3cba73d23048b73517ad4607bc170c",
@@ -21,6 +22,8 @@ const expectedCurrentValues = {
   NEXT_PUBLIC_WLD_APP_ID: "app_5e22b7aeace5c59e5217ad7e6c928324",
   NEXT_PUBLIC_WLD_RP_ID: "rp_125083d98f54ac84",
   NEXT_PUBLIC_WLD_ACTION_REGISTER: "register-wallet",
+  NEXT_PUBLIC_WLD_ALLOW_LEGACY_PROOFS: "true",
+  NEXT_PUBLIC_WLD_ENVIRONMENT: "production",
 }
 
 test("World ID config files do not contain deprecated values", () => {

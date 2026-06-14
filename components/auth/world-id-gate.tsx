@@ -1,15 +1,23 @@
 "use client"
 
 import { useState, type ReactNode } from "react"
-import { IDKitWidget, VerificationLevel, type ISuccessResult } from "@worldcoin/idkit"
+import {
+  IDKitRequestWidget,
+  IDKitErrorCodes,
+  proofOfHuman,
+  type IDKitResult,
+  type RpContext,
+} from "@worldcoin/idkit"
 import { toast } from "sonner"
 import { WorldIdModal } from "@/components/worldid-modal"
 import { sha256 } from "@/lib/crypto"
 import { getOrCreateIdentity } from "@/lib/store"
 import {
   worldAppId,
+  worldAllowLegacyProofs,
+  worldEnvironment,
   worldIdConfigured,
-  worldVerificationLevel,
+  worldRpId,
 } from "@/lib/auth-config"
 
 export interface WorldIdGateRenderProps {
@@ -33,8 +41,8 @@ interface WorldIdGateProps {
 }
 
 /**
- * Renders World ID (World 3.0 / IDKit) verification. Uses the real IDKit widget
- * + server-side cloud verification when configured, and falls back to the
+ * Renders World ID verification. Uses the real IDKit 4.x request widget plus
+ * server-side verification when configured, and falls back to the
  * simulated World App scan otherwise so the flow works in the demo.
  */
 export function WorldIdGate(props: WorldIdGateProps) {
@@ -48,23 +56,68 @@ function RealGate({
   children,
 }: WorldIdGateProps) {
   const [pending, setPending] = useState(false)
-  const verificationLevel =
-    worldVerificationLevel === "orb"
-      ? VerificationLevel.Orb
-      : VerificationLevel.Device
+  const [open, setOpen] = useState(false)
+  const [rpContext, setRpContext] = useState<RpContext | null>(null)
+  const [verifiedNullifier, setVerifiedNullifier] = useState<string | null>(null)
 
-  async function handleVerify(result: ISuccessResult) {
+  async function requestRpContext() {
+    const res = await fetch("/api/worldid/rp-context", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ action }),
+    })
+    const data = (await res.json().catch(() => ({}))) as Partial<RpContext>
+    if (!res.ok) {
+      throw new Error(
+        (data as { detail?: string }).detail ?? "Could not initialize World ID request.",
+      )
+    }
+    if (
+      typeof data.nonce !== "string" ||
+      typeof data.signature !== "string" ||
+      typeof data.created_at !== "number" ||
+      typeof data.expires_at !== "number"
+    ) {
+      throw new Error("Invalid RP context returned by server.")
+    }
+    return {
+      rp_id: worldRpId,
+      nonce: data.nonce,
+      signature: data.signature,
+      created_at: data.created_at,
+      expires_at: data.expires_at,
+    } satisfies RpContext
+  }
+
+  async function openVerification() {
+    try {
+      const context = await requestRpContext()
+      setRpContext(context)
+      setOpen(true)
+    } catch (error) {
+      const detail =
+        error instanceof Error ? error.message : "Could not start World ID verification."
+      toast.error("World ID unavailable", { description: detail })
+    }
+  }
+
+  async function handleVerify(result: IDKitResult) {
     setPending(true)
     try {
       const res = await fetch("/api/verify", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ proof: result, action, signal }),
+        body: JSON.stringify({ rp_id: worldRpId, idkitResponse: result }),
       })
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok || !data?.success) {
         throw new Error(data?.detail ?? "World ID verification failed")
       }
+      const nullifier = extractNullifier(result, data?.nullifier)
+      if (!nullifier) {
+        throw new Error("Verification succeeded but no nullifier was returned.")
+      }
+      setVerifiedNullifier(nullifier)
     } catch (error) {
       const detail =
         error instanceof Error ? error.message : "World ID verification failed"
@@ -75,24 +128,40 @@ function RealGate({
     }
   }
 
+  function handleSuccess(result: IDKitResult) {
+    const nullifier = extractNullifier(result, verifiedNullifier)
+    if (!nullifier) {
+      toast.error("World ID verification failed", {
+        description: "No nullifier was returned by IDKit.",
+      })
+      return
+    }
+    setVerifiedNullifier(null)
+    onVerified(nullifier)
+  }
+
   return (
-    <IDKitWidget
-      app_id={worldAppId as `app_${string}`}
-      action={action}
-      signal={signal}
-      verification_level={verificationLevel}
-      handleVerify={handleVerify}
-      onSuccess={(result: ISuccessResult) => onVerified(result.nullifier_hash)}
-      onError={(error) => {
-        const code = error?.code ? `${error.code}: ` : ""
-        const detail = error?.detail ?? error?.message ?? "Please try again."
-        toast.error("World ID verification failed", {
-          description: `${code}${detail}`,
-        })
-      }}
-    >
-      {({ open }: { open: () => void }) => children({ verify: open, pending })}
-    </IDKitWidget>
+    <>
+      {children({ verify: openVerification, pending })}
+      {rpContext ? (
+        <IDKitRequestWidget
+          open={open}
+          onOpenChange={setOpen}
+          app_id={worldAppId as `app_${string}`}
+          action={action}
+          rp_context={rpContext}
+          allow_legacy_proofs={worldAllowLegacyProofs}
+          environment={worldEnvironment}
+          preset={proofOfHuman(signal ? { signal } : undefined)}
+          handleVerify={handleVerify}
+          onSuccess={handleSuccess}
+          onError={(errorCode) => {
+            const detail = worldIdErrorDetail(errorCode)
+            toast.error("World ID verification failed", { description: detail })
+          }}
+        />
+      ) : null}
+    </>
   )
 }
 
@@ -129,4 +198,38 @@ function DemoGate({
       />
     </>
   )
+}
+
+function extractNullifier(result: IDKitResult, verifiedNullifier?: string): string | null {
+  if (verifiedNullifier) return verifiedNullifier
+  const firstResponse = result.responses[0]
+  if (!firstResponse) return null
+  if ("nullifier" in firstResponse && typeof firstResponse.nullifier === "string") {
+    return firstResponse.nullifier
+  }
+  if (
+    "session_nullifier" in firstResponse &&
+    Array.isArray(firstResponse.session_nullifier)
+  ) {
+    return firstResponse.session_nullifier[0] ?? null
+  }
+  return null
+}
+
+function worldIdErrorDetail(errorCode: IDKitErrorCodes): string {
+  const details: Partial<Record<IDKitErrorCodes, string>> = {
+    [IDKitErrorCodes.InvalidRpSignature]:
+      "RP signature invalid. Verify RP ID/signing key and server clock.",
+    [IDKitErrorCodes.UnknownRp]:
+      "Unknown RP ID. Confirm NEXT_PUBLIC_WLD_RP_ID matches Developer Portal.",
+    [IDKitErrorCodes.RpSignatureExpired]:
+      "RP signature expired. Please retry.",
+    [IDKitErrorCodes.CredentialUnavailable]:
+      "Required credential unavailable for this account.",
+    [IDKitErrorCodes.VerificationRejected]:
+      "Verification was rejected in World App.",
+    [IDKitErrorCodes.WorldId4NotAvailable]:
+      "World ID 4.0 is unavailable for this credential yet.",
+  }
+  return details[errorCode] ?? errorCode
 }

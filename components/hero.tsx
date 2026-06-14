@@ -14,10 +14,12 @@ const agentTabs: CodeTab[] = [
 
 const tl = new TrialLand({ apiKey: process.env.TRIALLAND_KEY })
 
-// Claim a trial on behalf of a verified human
+// Claim a trial for a World ID–verified human (IDKit 4.x Proof of Human).
+// wallet = the human's wallet, registered with World ID on World Chain.
 const claim = await tl.claims.create({
   trial: "perplexity",
-  onBehalfOf: worldIdSession, // World ID Proof of Human
+  wallet: registeredWallet,
+  proof: worldIdProof, // IDKit 4.x Proof of Human (RP-scoped nullifier)
 })
 
 console.log(claim.code) // PERP-V8UZ-PCU4 (non-transferable)`,
@@ -31,7 +33,8 @@ console.log(claim.code) // PERP-V8UZ-PCU4 (non-transferable)`,
   -H "Content-Type: application/json" \\
   -d '{
     "trial": "perplexity",
-    "on_behalf_of": "<worldid_session>"
+    "wallet": "0xabc...def",
+    "proof": "<idkit_v4_proof_of_human>"
   }'`,
   },
   {
@@ -43,7 +46,8 @@ npm install -g @trialland/cli
 trialland login --key tl_live_your_key
 
 trialland claim perplexity \\
-  --on-behalf-of worldid_session_abc123`,
+  --wallet 0xabc...def \\
+  --proof ./worldid-proof.json`,
   },
   {
     id: "mcp",
@@ -69,9 +73,10 @@ description: Claim a human-verified free trial on behalf of the current user.
 ---
 
 Use the TrialLand API to claim a non-transferable trial code.
-1. Confirm a World ID Proof of Human session for the user.
-2. POST /v1/claims with { trial, on_behalf_of }.
-3. Return the issued code. Re-runs are idempotent.`,
+1. Request an RP signature, then collect an IDKit 4.x Proof of Human.
+2. Ensure the human's wallet is registered with World ID on World Chain.
+3. POST /v1/claims with { trial, wallet, proof }.
+4. Return the issued code. Re-runs are idempotent per human + trial.`,
   },
 ]
 

@@ -22,10 +22,12 @@ const tabs: CodeTab[] = [
 
 const tl = new TrialLand({ apiKey: process.env.TRIALLAND_KEY })
 
-// Claim a trial on behalf of a verified human
+// Claim a trial for a World ID–verified human (IDKit 4.x Proof of Human).
+// wallet = the human's wallet, registered with World ID on World Chain.
 const claim = await tl.claims.create({
   trial: "perplexity",
-  onBehalfOf: worldIdSession, // World ID Proof of Human
+  wallet: registeredWallet,
+  proof: worldIdProof, // IDKit 4.x Proof of Human (RP-scoped nullifier)
 })
 
 console.log(claim.code) // PERP-V8UZ-PCU4 (non-transferable)`,
@@ -39,7 +41,8 @@ console.log(claim.code) // PERP-V8UZ-PCU4 (non-transferable)`,
   -H "Content-Type: application/json" \\
   -d '{
     "trial": "perplexity",
-    "on_behalf_of": "<worldid_session>"
+    "wallet": "0xabc...def",
+    "proof": "<idkit_v4_proof_of_human>"
   }'`,
   },
   {
@@ -51,7 +54,8 @@ npm install -g @trialland/cli
 trialland login --key tl_live_your_key
 
 trialland claim perplexity \\
-  --on-behalf-of worldid_session_abc123`,
+  --wallet 0xabc...def \\
+  --proof ./worldid-proof.json`,
   },
   {
     id: "mcp",
@@ -77,24 +81,31 @@ description: Claim a human-verified free trial on behalf of the current user.
 ---
 
 Use the TrialLand API to claim a non-transferable trial code.
-1. Confirm a World ID Proof of Human session for the user.
-2. POST /v1/claims with { trial, on_behalf_of }.
-3. Return the issued code. Re-runs are idempotent.`,
+1. Request an RP signature, then collect an IDKit 4.x Proof of Human.
+2. Ensure the human's wallet is registered with World ID on World Chain.
+3. POST /v1/claims with { trial, wallet, proof }.
+4. Return the issued code. Re-runs are idempotent per human + trial.`,
   },
 ]
 
 const endpoints = [
   {
+    icon: Fingerprint,
+    method: "POST",
+    path: "/v1/register",
+    body: "Bind a wallet to a World ID Proof of Human, registered on World Chain. Required before a wallet can claim.",
+  },
+  {
     icon: Ticket,
     method: "POST",
     path: "/v1/claims",
-    body: "Claim a trial on behalf of a verified human. Idempotent per human + trial.",
+    body: "Claim a trial for a registered, World ID–verified human. Idempotent per human + trial.",
   },
   {
     icon: KeyRound,
     method: "POST",
     path: "/v1/redemptions",
-    body: "Redeem an issued code on the partner, re-verifying the same human.",
+    body: "Redeem an issued code on the partner, re-verifying the same World ID human.",
   },
   {
     icon: ListChecks,
@@ -106,23 +117,25 @@ const endpoints = [
 
 const pageMarkdown = `# TrialLand for agents
 
-Claim and redeem human-verified free trials programmatically. Every claim is gated by a World ID Proof of Human — one non-transferable code per human, per trial.
+Claim and redeem human-verified free trials programmatically. Every claim is gated by a World ID (IDKit 4.x) Proof of Human, bound to a wallet registered on World Chain — one non-transferable code per human, per trial.
 
 ## Quickstart (CLI)
 \`\`\`bash
 npm install -g @trialland/cli
 trialland login --key tl_live_your_key
-trialland claim perplexity --on-behalf-of worldid_session_abc123
+trialland claim perplexity --wallet 0xabc...def --proof ./worldid-proof.json
 \`\`\`
 
 ## Endpoints
-- POST /v1/claims — claim a trial on behalf of a verified human (idempotent per human + trial)
+- POST /v1/register — bind a wallet to a World ID Proof of Human, registered on World Chain
+- POST /v1/claims — claim a trial for a registered, verified human (idempotent per human + trial)
 - POST /v1/redemptions — redeem an issued code, re-verifying the same human
 - GET /v1/trials — list available trials and perks
 
 ## Authentication
 - Authorization: Bearer <TRIALLAND_KEY>
-- Body field on_behalf_of: a World ID session (Proof of Human)
+- Body field wallet: the human's wallet, registered with World ID on World Chain
+- Body field proof: an IDKit 4.x Proof of Human (RP-scoped nullifier; RP signature required server-side)
 
 Full reference: /llms-full.txt`
 
@@ -218,14 +231,20 @@ export default function DocsPage() {
                 <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">
                   TRIALLAND_KEY
                 </code>{" "}
-                plus an{" "}
+                plus a{" "}
                 <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">
-                  on_behalf_of
+                  wallet
                 </code>{" "}
-                World ID session proving a unique human authorized the run.
-                Claims are idempotent per human and trial, and codes are
-                re-verified against the same human at redemption — so a fleet of
-                agents can&apos;t farm an unlimited supply of trials.
+                registered with World ID and an IDKit 4.x{" "}
+                <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm text-foreground">
+                  proof
+                </code>{" "}
+                of human. Proof requests are signed by your RP key server-side,
+                verified against World&apos;s v4 endpoint, and the RP-scoped
+                nullifier is bound to the registered wallet. Claims are
+                idempotent per human and trial, and codes are re-verified
+                against the same human at redemption — so a fleet of agents
+                can&apos;t farm an unlimited supply of trials.
               </p>
             </div>
           </div>

@@ -26,12 +26,12 @@ const steps = [
   {
     icon: ScanLine,
     title: "Prove you're human",
-    body: "Scan with World App to generate a zero-knowledge World ID proof. It confirms you're a unique person without revealing who you are.",
+    body: "Scan with World App to generate a zero-knowledge World ID (IDKit 4.x) Proof of Human. It confirms you're a unique person without revealing who you are.",
   },
   {
     icon: Ticket,
-    title: "Get a unique code",
-    body: "We mint a single promo code bound to your verification. Your per-trial nullifier guarantees one code per human — bots and duplicates are rejected.",
+    title: "Register & get a unique code",
+    body: "Your wallet is registered against your World ID on World Chain, then we mint a single promo code bound to it. Your RP-scoped nullifier guarantees one code per human — bots and duplicates are rejected.",
   },
   {
     icon: Lock,
@@ -49,7 +49,7 @@ const agentSteps = [
   {
     icon: Fingerprint,
     title: "Bind a verified human",
-    body: "Your agent presents a World ID session proving a unique human authorized the run. The proof is the identity — not an email it can mint at will.",
+    body: "Your agent presents an IDKit 4.x Proof of Human bound to a wallet registered on World Chain. The proof is the identity — not an email it can mint at will.",
   },
   {
     icon: Ticket,
@@ -72,12 +72,12 @@ const concepts = [
   {
     icon: Fingerprint,
     term: "Proof of Human",
-    def: "A World ID credential proving there's a unique living person behind the request — the foundation for one-per-person limits.",
+    def: "A World ID 4.0 (IDKit 4.x) credential proving there's a unique living person behind the request — the foundation for one-per-person limits.",
   },
   {
     icon: KeyRound,
     term: "Nullifier",
-    def: "A per-human, per-action identifier. The same person claiming the same trial always collides, enforcing uniqueness without tracking them across trials.",
+    def: "An RP-scoped identifier returned with each proof and bound to your registered wallet. The same person claiming the same trial always collides, enforcing uniqueness without tracking them across trials.",
   },
   {
     icon: ShieldCheck,

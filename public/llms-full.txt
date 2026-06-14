@@ -1,30 +1,51 @@
 # TrialLand — Full agent reference
 
-> TrialLand is a marketplace for human-verified free trials. An agent claims a non-transferable promo code on behalf of a World ID–verified human — one per human, per trial. Partners only ever receive a hashed copy of the code plus an anonymous nullifier, never the raw code or the person's identity.
+> TrialLand is a marketplace for human-verified free trials. An agent claims a non-transferable promo code for a World ID–verified human whose wallet is registered on World Chain — one per human, per trial. Partners only ever receive a hashed copy of the code plus an anonymous nullifier, never the raw code or the person's identity.
 
 ## Core concepts
 
-- **Proof of Human**: A World ID credential proving a unique living person is behind the request. It is the account — not an email an agent can mint at will.
-- **Nullifier**: A per-human, per-trial identifier. The same human claiming the same trial always collides, enforcing one-per-human without tracking the person across trials.
+- **Proof of Human**: A World ID (IDKit 4.x) credential proving a unique living person is behind the request. It is the account — not an email an agent can mint at will. Requested via the `proofOfHuman` preset with legacy Orb fallback.
+- **RP signature**: World ID 4.0 requires every proof request to be signed by your relying-party signing key (server-side). The signed `rp_context` (`rp_id`, `nonce`, `created_at`, `expires_at`, `signature`) is what World App validates before generating a proof.
+- **Nullifier**: An RP-scoped identifier returned with each proof. At registration it is bound to the human's wallet; the same human claiming the same trial always collides, enforcing one-per-human without tracking them across trials.
+- **Registered wallet**: Before claiming, the human's wallet (created/connected via Dynamic) is registered against their World ID on World Chain. Claims require an on-chain-registered wallet.
 - **Idempotent claims**: Re-running a claim for the same human + trial returns the same code, never a new one.
 - **Non-transferable**: Codes are bound to the human who authorized the agent and re-verified at redemption, so they can't be resold, shared, or replayed.
 
 ## Authentication
 
-All requests use a partner/agent API key plus a World ID session that proves a unique human authorized the run.
+All requests use a partner/agent API key plus an IDKit 4.x Proof of Human bound to a registered wallet.
 
 - `Authorization: Bearer <TRIALLAND_KEY>`
-- Body field `on_behalf_of`: a World ID session token (Proof of Human).
+- Body field `wallet`: the human's wallet, registered with World ID on World Chain.
+- Body field `proof`: an IDKit 4.x Proof of Human. The proof request must be signed by the RP signing key server-side and is verified against World's v4 endpoint (`POST https://developer.world.org/api/v4/verify/{rp_id}`).
 
 ## Endpoints
 
+### POST /v1/register
+Bind a wallet to a World ID Proof of Human and register it on World Chain. Required before a wallet can claim.
+
+Request:
+    {
+      "wallet": "0xabc...def",
+      "proof": "<idkit_v4_proof_of_human>"
+    }
+
+Response (200):
+    {
+      "wallet": "0xabc...def",
+      "nullifier": "0x55e454…",
+      "chain": "World Chain",
+      "status": "registered"
+    }
+
 ### POST /v1/claims
-Claim a trial on behalf of a verified human.
+Claim a trial for a registered, verified human.
 
 Request:
     {
       "trial": "perplexity",
-      "on_behalf_of": "<worldid_session>"
+      "wallet": "0xabc...def",
+      "proof": "<idkit_v4_proof_of_human>"
     }
 
 Response (200):
@@ -49,10 +70,12 @@ List available trials, perks, and trial lengths.
 
     const tl = new TrialLand({ apiKey: process.env.TRIALLAND_KEY })
 
-    // Claim a trial on behalf of a verified human
+    // Claim a trial for a World ID–verified human (IDKit 4.x Proof of Human).
+    // wallet = the human's wallet, registered with World ID on World Chain.
     const claim = await tl.claims.create({
       trial: "perplexity",
-      onBehalfOf: worldIdSession, // World ID Proof of Human
+      wallet: registeredWallet,
+      proof: worldIdProof, // IDKit 4.x Proof of Human (RP-scoped nullifier)
     })
 
     console.log(claim.code) // PERP-V8UZ-PCU4 (non-transferable)
@@ -63,7 +86,8 @@ List available trials, perks, and trial lengths.
       -H "Content-Type: application/json" \
       -d '{
         "trial": "perplexity",
-        "on_behalf_of": "<worldid_session>"
+        "wallet": "0xabc...def",
+        "proof": "<idkit_v4_proof_of_human>"
       }'
 
 ### CLI
@@ -72,7 +96,8 @@ List available trials, perks, and trial lengths.
     trialland login --key tl_live_your_key
 
     trialland claim perplexity \
-      --on-behalf-of worldid_session_abc123
+      --wallet 0xabc...def \
+      --proof ./worldid-proof.json
 
 ### MCP
     {
@@ -92,9 +117,10 @@ List available trials, perks, and trial lengths.
     ---
 
     Use the TrialLand API to claim a non-transferable trial code.
-    1. Confirm a World ID Proof of Human session for the user.
-    2. POST /v1/claims with { trial, on_behalf_of }.
-    3. Return the issued code. Re-runs are idempotent — same human, same code.
+    1. Request an RP signature, then collect an IDKit 4.x Proof of Human.
+    2. Ensure the human's wallet is registered with World ID on World Chain.
+    3. POST /v1/claims with { trial, wallet, proof }.
+    4. Return the issued code. Re-runs are idempotent — same human, same code.
 
 ## Privacy model
 

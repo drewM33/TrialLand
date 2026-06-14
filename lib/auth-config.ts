@@ -9,7 +9,7 @@
  *   NEXT_PUBLIC_WLD_APP_ID            World ID app id, e.g. "app_abc123"
  *   NEXT_PUBLIC_WLD_RP_ID             World ID 4.0 RP id, e.g. "rp_abc123"
  *   NEXT_PUBLIC_WLD_ACTION_REGISTER   World ID action for registration
- *   WORLD_RP_SIGNING_KEY              Server-only RP signing key (hex)
+ *   WLD_SECURE_SIGNING_KEY            Server-only RP signing key (hex)
  *   NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID  Dynamic environment id
  */
 

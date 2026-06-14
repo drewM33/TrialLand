@@ -6,7 +6,7 @@ import { signRequest } from "@worldcoin/idkit-core/signing"
  * The signing key must never be exposed to the client.
  */
 export async function POST(req: Request) {
-  const signingKey = process.env.WORLD_RP_SIGNING_KEY
+  const signingKey = process.env.WLD_SECURE_SIGNING_KEY?.trim()
   if (!signingKey) {
     return NextResponse.json(
       { success: false, detail: "World ID RP signing key is not configured." },

@@ -8,7 +8,7 @@ const VERIFY_URL = "https://developer.world.org/api/v4/verify"
  * The client forwards the raw IDKit result payload — no remapping required.
  */
 export async function POST(req: Request) {
-  const rpId = process.env.NEXT_PUBLIC_WLD_RP_ID ?? process.env.WORLD_RP_ID
+  const rpId = process.env.NEXT_PUBLIC_WLD_RP_ID?.trim()
   if (!rpId?.startsWith("rp_") && !rpId?.startsWith("app_")) {
     return NextResponse.json(
       { success: false, detail: "World ID RP id is not configured on the server." },

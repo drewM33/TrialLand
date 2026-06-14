@@ -8,7 +8,7 @@ import type { IDKitResult } from "@worldcoin/idkit-core"
  * register a wallet.
  */
 export async function POST(req: Request) {
-  const defaultRpId = process.env.NEXT_PUBLIC_WLD_RP_ID
+  const defaultRpId = process.env.NEXT_PUBLIC_WLD_RP_ID?.trim()
   if (!defaultRpId?.startsWith("rp_")) {
     return NextResponse.json(
       { success: false, detail: "World ID RP ID is not configured on the server." },
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     )
   }
 
-  const rpId = body.rp_id ?? defaultRpId
+  const rpId = (body.rp_id ?? defaultRpId).trim()
   if (!rpId.startsWith("rp_") && !rpId.startsWith("app_")) {
     return NextResponse.json(
       { success: false, detail: "Invalid RP ID." },

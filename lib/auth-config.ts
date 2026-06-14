@@ -15,21 +15,35 @@
  *   NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID  Dynamic environment id
  */
 
-export const worldAppId = process.env.NEXT_PUBLIC_WLD_APP_ID ?? ""
-export const worldRpId = process.env.NEXT_PUBLIC_WLD_RP_ID ?? ""
-export const worldActionRegister =
-  process.env.NEXT_PUBLIC_WLD_ACTION_REGISTER ?? "register-wallet"
-const worldAllowLegacyProofsRaw =
-  process.env.NEXT_PUBLIC_WLD_ALLOW_LEGACY_PROOFS ?? "true"
+/** Read an env var and strip surrounding whitespace/newlines that some hosts
+ * (e.g. piped `vercel env` values) can accidentally append. */
+function readEnv(value: string | undefined, fallback = ""): string {
+  return (value ?? fallback).trim()
+}
+
+export const worldAppId = readEnv(process.env.NEXT_PUBLIC_WLD_APP_ID)
+export const worldRpId = readEnv(process.env.NEXT_PUBLIC_WLD_RP_ID)
+export const worldActionRegister = readEnv(
+  process.env.NEXT_PUBLIC_WLD_ACTION_REGISTER,
+  "register-wallet",
+)
+const worldAllowLegacyProofsRaw = readEnv(
+  process.env.NEXT_PUBLIC_WLD_ALLOW_LEGACY_PROOFS,
+  "true",
+)
 /** Accept 3.0 fallback proofs during migration when true. */
 export const worldAllowLegacyProofs =
   worldAllowLegacyProofsRaw.toLowerCase() !== "false"
-const worldEnvironmentRaw = process.env.NEXT_PUBLIC_WLD_ENVIRONMENT ?? "production"
+const worldEnvironmentRaw = readEnv(
+  process.env.NEXT_PUBLIC_WLD_ENVIRONMENT,
+  "production",
+)
 /** IDKit environment ("production" unless explicitly set to "staging"). */
 export const worldEnvironment =
   worldEnvironmentRaw.toLowerCase() === "staging" ? "staging" : "production"
-export const dynamicEnvironmentId =
-  process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID ?? ""
+export const dynamicEnvironmentId = readEnv(
+  process.env.NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID,
+)
 
 /** True once the app has both World ID app + RP ids (`app_…` + `rp_…`). */
 export const worldIdConfigured =

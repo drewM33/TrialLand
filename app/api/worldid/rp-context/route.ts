@@ -6,8 +6,8 @@ interface RpContextBody {
 }
 
 export async function POST(req: Request) {
-  const rpId = process.env.NEXT_PUBLIC_WLD_RP_ID
-  const signingKey = process.env.WLD_SECURE_SIGNING_KEY
+  const rpId = process.env.NEXT_PUBLIC_WLD_RP_ID?.trim()
+  const signingKey = process.env.WLD_SECURE_SIGNING_KEY?.trim()
 
   if (!rpId?.startsWith("rp_")) {
     return NextResponse.json(
